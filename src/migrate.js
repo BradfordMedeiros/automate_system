@@ -12,10 +12,7 @@ const isMigrated =  databaseName => {
 
 const migrateDb = {
   isMigrated: isMigrated,
-  createDb: databaseName => {
-    const database = getDatabase(databaseName);
-    return migrate(database);
-  },
+  createDb: databaseName => migrate(getDatabase(databaseName)),
 };
 
 module.exports = migrateDb;

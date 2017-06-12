@@ -27,7 +27,6 @@ const saveActionToDb = (db, topic, value) => new Promise((resolve, reject) => {
 });
 
 const addActionData = (topic, value) => {
-  // log to mqtt database
   if (actions[topic]){
     actions[topic].value = value;
   }else{
@@ -45,7 +44,9 @@ const onActionData = (db, topic, value) => new Promise((resolve, reject) => {
 
 const loadActions = db => new Promise((resolve, reject) => {
   getActionsFromDb(db).catch(reject).then(actions => {
-    actions.forEach(action => addActionData(action.topic, action.value))
+    actions.forEach(action => {
+      addActionData(action.topic, action.value)
+    })
     resolve();
   });
 });

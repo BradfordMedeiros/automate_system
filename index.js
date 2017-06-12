@@ -1,6 +1,11 @@
+const process = require('process');
 const migrate = require('./src/migrate');
+const loadSystem = require('./src/loadSystem');
+const getDatabase = require('./src/getDatabase');
 
-
+process.on("unhandledRejection", function (err) {
+  console.error("unhandledRejection: " + err.stack); // or whatever.
+});
 
 const printStartMessage = ({ resourceFile, startMqtt, mqttPort }) => {
   console.log('Starting automate core')
@@ -23,7 +28,16 @@ const printStartMessage = ({ resourceFile, startMqtt, mqttPort }) => {
 const start = ({ resourceFile, startMqtt, mqttPort }) => {
   printStartMessage({ resourceFile, startMqtt, mqttPort });
 
+  console.log('System: loading system');
+  loadSystem(getDatabase(resourceFile)).then(system => {
+    console.log('System: Loaded system');
+    sys = system;
+  }).catch(() => {
+    console.log('System: Could not load system')
+  })
 };
+
+
 const init = ({
   resourceFile,
   startMqtt = false,
