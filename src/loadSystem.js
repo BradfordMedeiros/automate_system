@@ -15,10 +15,12 @@ const loadSystem = db => {
         actions: {
           getActions: () => actions.getActions(),
           onActionData: (topic, value) => actions.onActionData(db, topic, value),
+          unregister: (topic) => actions.unregisterAction(db, topic),
         },
         states: {
           getStates: () => states.getStates(),
           onStateData: (topic, value) => states.onStateData(db, topic, value),
+          unregister: (topic) => states.unregisterState(db, topic),
         },
       });
       resolve(system);
