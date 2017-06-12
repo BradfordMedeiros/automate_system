@@ -2,58 +2,83 @@ const process = require('process');
 const migrate = require('./src/migrate');
 const loadSystem = require('./src/loadSystem');
 const getDatabase = require('./src/getDatabase');
+const startMqttBroker = require('./src/environment/startMqttBroker');
+const mqttSystem = require('./src/mqttSystem');
 
 process.on("unhandledRejection", function (err) {
   console.error("unhandledRejection: " + err.stack); // or whatever.
 });
+
+const migrateSystem = resourceFile => {
+  return new Promise((resolve, reject) => {
+    if (!migrate.isMigrated(resourceFile)){
+      console.log('Migration: Not yet migrated');
+      migrate.createDb(resourceFile).then(() => {
+        console.log("Migration: Successful")
+        resolve();
+      }).catch(err => {
+        console.log("Migration: Failure");
+        reject(err);
+      });
+    }else{
+      console.log('Migration: Already migrated');
+      resolve();
+    }
+  });
+};
 
 const printStartMessage = ({ resourceFile, startMqtt, mqttPort }) => {
   console.log('Starting automate core')
   console.log('Resource: ', resourceFile);
   console.log('Using internal Mqtt Broker: ', startMqtt);
   console.log('Mqtt Port: ', mqttPort);
-
-  if (!migrate.isMigrated(resourceFile)){
-    console.log('Migration: Not yet migrated');
-    migrate.createDb(resourceFile).then(() => {
-      console.log("Migration: Successful")
-    }).catch(err => {
-      console.log("Migration: Failure");
-    });
-  }else{
-    console.log('Migration: Already migrated');
-  }
 };
 
-const start = ({ resourceFile, startMqtt, mqttPort }) => {
-  printStartMessage({ resourceFile, startMqtt, mqttPort });
-
-  console.log('System: loading system');
-  loadSystem(getDatabase(resourceFile)).then(system => {
-    console.log('System: Loaded system');
-    sys = system;
-  }).catch(() => {
-    console.log('System: Could not load system')
-  })
+const start = ({ resourceFile, startMqtt }) => {
+  printStartMessage({resourceFile, startMqtt });
+  migrateSystem(resourceFile).then(() => {
+    loadSystem(getDatabase(resourceFile)).then(system => {
+      console.log('System: Loaded system');
+      const theSystem = system;
+      sys = theSystem;
+      if (startMqtt){
+        startMqttBroker().then(() => {
+          console.log('System: started mqtt broker');
+          mqttSystem({
+            onState: (topic, messsage) => {
+              theSystem.states.onStateData(topic, messsage);
+            },
+            onAction: (topic, message) => {
+              theSystem.actions.onActionData(topic, message);
+            },
+            onEvent: (topic, message) => {
+              console.log('got event: ', topic, ' message: ', message);
+            }
+          }).catch(() => console.log('could not connect to mqtt'));
+        }).catch(err => {
+          console.log('System: Could not start mqtt broker');
+        })
+      }
+    }).catch(() => {
+      console.log('System: Could not load system')
+    })
+  }).catch(err => {
+    console.log(err);
+  });
 };
-
 
 const init = ({
   resourceFile,
   startMqtt = false,
-  mqttPort,
 }) => {
   if (typeof(resourceFile) !== typeof('')){
     throw (new Error("Resource file string must be defined"));
   }
-  if (typeof(mqttPort) !== typeof(1)){
-    throw (new Error('Port of MQTT Server must be defined'));
-  }
+
 
   start({
     resourceFile,
     startMqtt: startMqtt,
-    mqttPort,
   })
 };
 
