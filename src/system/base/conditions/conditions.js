@@ -34,7 +34,6 @@ const saveConditionToDb = (db, conditionName, eval) => new Promise((resolve, rej
   });
 });
 
-
 const transformConditionString = (conditionString) => {
   const evalString = `({ getStates }) => {
     ${conditionString}
@@ -50,7 +49,6 @@ const addCondition = (db,  conditionName, eval ) => {
   saveConditionToDb(db, conditionName, eval);
 };
 
-// @todo
 const deleteCondition = (db, conditionName) => new Promise((resolve, reject) => {
   db.open().catch(reject).then(database => {
     database.all(`DELETE FROM conditions WHERE name = ('${conditionName}')`, (err) => {
@@ -76,7 +74,7 @@ const loadConditions = (db, getSystemStates) => new Promise((resolve, reject) =>
   });
 });
 
-const getConditions = () => conditions;
+const getConditions = () => Object.keys(conditions).map(condition => conditions[condition]);
 
 module.exports = {
   addCondition,
