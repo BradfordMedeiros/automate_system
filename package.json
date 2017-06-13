@@ -32,6 +32,6 @@
     "sendmail": "^1.1.1",
     "sqlite3": "^3.1.8",
     "wetty": "https://github.com/BradfordMedeiros/wetty.git",
-    "when_do": "^1.0.3"
+    "when_do": "^1.0.6"
   }
 }

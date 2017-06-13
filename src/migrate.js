@@ -4,8 +4,19 @@ const createActionSchema = require('./system/actions/createSchema');
 const createStateSchema = require('./system/states/createSchema');
 const createEventSchema = require('./system/events/createSchema');
 const getDatabase = require('./getDatabase');
+const sequencer = require('when_do').sequencer;
 
-const migrate = db =>  Promise.all([ createActionSchema(db), createStateSchema(db), createEventSchema(db)]);
+const migrate = db => {
+  return new Promise((resolve, reject) => {
+    sequencer()
+      .hold(() => createActionSchema(db))
+      .hold(() => createStateSchema(db))
+      .hold(() => createEventSchema(db))
+      .run()
+      .catch(reject)
+      .then(resolve);
+  })
+};
 
 const isMigrated =  databaseName => {
  return fs.existsSync(databaseName);

@@ -4,7 +4,8 @@ const createSchema = db => new Promise((resolve, reject) => {
     database.all(
       `CREATE TABLE events (
         topic	TEXT,
-        value	TEXT
+        value	TEXT,
+        timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
       );`, (err) => {
         database.close();
         if (err){
