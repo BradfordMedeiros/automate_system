@@ -52,7 +52,6 @@ const start = ({ resourceFile, startMqtt }) => {
               theSystem.baseSystem.actions.onActionData(topic, message);
             },
             onEvent: (topic, message) => {
-              console.log('got event: ', topic, ' message: ', message);
               theSystem.baseSystem.events.onEventData(topic, message);
             }
           }).catch(() => console.log('could not connect to mqtt'));
