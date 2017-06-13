@@ -1,6 +1,12 @@
 
 let conditions = { };
 
+let stateGetter = () => {
+  throw (new Error("Get states never set: Were conditions loaded?"));
+};
+
+let getStates = () => stateGetter();
+
 const getConditionsFromDb = db => new Promise((resolve, reject) => {
   db.open().catch(reject).then(database => {
     database.all('SELECT * FROM conditions', (err, actions) => {
@@ -29,9 +35,18 @@ const saveConditionToDb = (db, conditionName, eval) => new Promise((resolve, rej
 });
 
 
+const transformConditionString = (conditionString) => {
+  const evalString = `({ getStates }) => {
+    ${conditionString}
+  }`;
+  return eval(evalString);
+};
 
 const addCondition = (db,  conditionName, eval ) => {
-  conditions[conditionName] = eval;
+  conditions[conditionName] = {
+    name: conditionName,
+    eval: () => transformConditionString(eval)({ getStates }),
+  };
   saveConditionToDb(db, conditionName, eval);
 };
 
@@ -51,7 +66,8 @@ const deleteCondition = (db, conditionName) => new Promise((resolve, reject) => 
   });
 });
 
-const loadConditions = db => new Promise((resolve, reject) => {
+const loadConditions = (db, getSystemStates) => new Promise((resolve, reject) => {
+  stateGetter =  getSystemStates;
   getConditionsFromDb(db).catch(reject).then(conditions => {
     conditions.forEach(condition => {
       addCondition(db, condition.name, condition.eval);

@@ -6,11 +6,10 @@ const conditions = require('./system/conditions/conditions');
 const loadSystem = db => {
   const loadActions = actions.loadActions(db);
   const loadStates = states.loadStates(db);
-  const loadConditions = conditions.loadConditions(db);
 
-  const systemLoaded = Promise.all([loadActions, loadStates, loadConditions]);
+  const systemLoaded = Promise.all([loadActions, loadStates]);
 
-  return new Promise((resolve, reject) => {
+  const systemWithoutConditionsLoaded =  new Promise((resolve, reject) => {
     systemLoaded.catch(reject).then(() => {
       const system =  ({
         actions: {
@@ -27,6 +26,7 @@ const loadSystem = db => {
           getConditions: conditions.getConditions,
           addCondition: (name, eval) => conditions.addCondition(db, name, eval),
           deleteCondition: (name) => conditions.deleteCondition(db, name),
+          getStates: conditions.getStates,
         },
         events: {
           onEventData: (topic, value) => events.onEventData(db, topic, value),
@@ -35,6 +35,12 @@ const loadSystem = db => {
       });
       resolve(system);
     })
+  });
+
+  return new Promise((resolve, reject) => {
+      systemWithoutConditionsLoaded.then(system => {
+        conditions.loadConditions(db, system.states.getStates).catch(reject).then(() => { resolve(system) });
+      });
   });
 };
 
