@@ -38,10 +38,23 @@ const transformStateScriptToString = (conditionString) => {
 
 
 const addStateScript = (db,  stateScriptName, topic, eval ) => {
+  let handle = undefined;
+
+  const evalFunction = () => transformStateScriptToString(eval)({  });
   stateScripts[stateScriptName] = {
     name: stateScriptName,
     topic,
-    eval: () => transformStateScriptToString(eval)({  }),
+    eval: evalFunction,
+    run: publish => {
+      if (typeof(publish) !== 'function'){
+        throw (new Error('Publish must be function'));
+      }
+      handle = setInterval(() => {
+        const value = evalFunction();
+        publish(topic, value.toString());
+      }, 1000);
+    },
+    stop: () => clearInterval(handle),
   };
   saveStateScriptToDb(db, stateScriptName, topic, eval);
 };
@@ -50,8 +63,8 @@ const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject)
   db.open().catch(reject).then(database => {
     database.all(`DELETE FROM state_engine WHERE name = ('${stateScriptName}')`, (err) => {
       database.close();
-      stateScripts = { };
-      loadStateScripts(db);
+      stateScripts[stateScriptName].stop();
+      delete stateScripts[stateScriptName];
       if (err){
         reject(err);
       }else{

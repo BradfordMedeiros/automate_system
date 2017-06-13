@@ -53,8 +53,7 @@ const deleteCondition = (db, conditionName) => new Promise((resolve, reject) => 
   db.open().catch(reject).then(database => {
     database.all(`DELETE FROM conditions WHERE name = ('${conditionName}')`, (err) => {
       database.close();
-      conditions = { };
-      loadConditions(db);
+      delete conditions[conditionName];
       if (err){
         reject(err);
       }else{

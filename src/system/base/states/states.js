@@ -41,8 +41,7 @@ const unregisterState = (db, topic) => new Promise((resolve, reject) => {
   db.open().catch(reject).then(database => {
     database.all(`DELETE FROM states WHERE topic = ('${topic}')`, (err) => {
       database.close();
-      states = { };
-      loadStates(db);
+      delete states[topic];
       if (err){
         reject(err);
       }else{

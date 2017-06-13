@@ -50,8 +50,7 @@ const unregisterAction = (db, topic) => new Promise((resolve, reject) => {
   db.open().catch(reject).then(database => {
     database.all(`DELETE FROM actions WHERE topic = ('${topic}')`, (err) => {
       database.close();
-      actions = { };
-      loadActions(db);
+      delete actions[topic];
       if (err){
         reject(err);
       }else{
