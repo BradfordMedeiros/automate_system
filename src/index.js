@@ -1,9 +1,9 @@
 const process = require('process');
-const migrate = require('./src/migrate');
-const loadSystem = require('./src/loadSystem');
-const getDatabase = require('./src/getDatabase');
-const startMqttBroker = require('./src/environment/startMqttBroker');
-const mqttSystem = require('./src/mqttSystem');
+const migrate = require('./environment/migrate');
+const loadSystem = require('./loadSystem');
+const getDatabase = require('./getDatabase');
+const startMqttBroker = require('./environment/startMqttBroker');
+const mqttSystem = require('./mqttSystem');
 
 process.on("unhandledRejection", function (err) {
   console.error("unhandledRejection: " + err.stack); // or whatever.
@@ -46,14 +46,14 @@ const start = ({ resourceFile, startMqtt }) => {
           console.log('System: started mqtt broker');
           mqttSystem({
             onState: (topic, messsage) => {
-              theSystem.states.onStateData(topic, messsage);
+              theSystem.baseSystem.states.onStateData(topic, messsage);
             },
             onAction: (topic, message) => {
-              theSystem.actions.onActionData(topic, message);
+              theSystem.baseSystem.actions.onActionData(topic, message);
             },
             onEvent: (topic, message) => {
               console.log('got event: ', topic, ' message: ', message);
-              theSystem.events.onEventData(topic, message);
+              theSystem.baseSystem.events.onEventData(topic, message);
             }
           }).catch(() => console.log('could not connect to mqtt'));
         }).catch(err => {
@@ -87,31 +87,3 @@ const automate_sys = {
 };
 
 module.exports = automate_sys;
-
-/*
-
-  system:
-    actions: [    - data: (topic)
-       path: <no make sense>
-       get_name: <name of action? --> should be topic name?>
-       get_type: --> doesn't really make sense anymore,
-
-       proposed:
-       get_value: get current value of the action
-    ],
-    states: [
-      path: <no  make sense>
-      get_state: <get value might make more sense>
-      get_name: <topic name make more sense>
-      scripts: {    // joined?
-        contnet: // ?
-      }
-    ],
-    conditions: [
-    ],
-    sequences: [
-
-    ]
-
-
- */

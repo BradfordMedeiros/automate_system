@@ -1,6 +1,6 @@
 
 
-const automate_sys = require('./index');
+const automate_sys = require('./src/index');
 
 automate_sys.init({
   resourceFile: './test.db',
