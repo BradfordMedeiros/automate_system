@@ -15,7 +15,7 @@ const getStatesFromDb = db => new Promise((resolve, reject) => {
 
 const saveStateToDb = (db, topic, value) => new Promise((resolve, reject) => {
   db.open().catch(reject).then(database => {
-    database.all(`INSERT OR REPLACE INTO states (topic) values ('${topic}')`, (err) => {
+    database.all(`INSERT OR REPLACE INTO states (topic, value) values ('${topic}','${value}')`, (err) => {
       database.close();
       if (err){
         reject(err);

@@ -1,12 +1,14 @@
 const actions = require('./system/actions/actions');
 const states = require('./system/states/states');
 const events = require('./system/events/events');
+const conditions = require('./system/conditions/conditions');
 
 const loadSystem = db => {
   const loadActions = actions.loadActions(db);
   const loadStates = states.loadStates(db);
+  const loadConditions = conditions.loadConditions(db);
 
-  const systemLoaded = Promise.all([loadActions, loadStates]);
+  const systemLoaded = Promise.all([loadActions, loadStates, loadConditions]);
 
   return new Promise((resolve, reject) => {
     systemLoaded.catch(reject).then(() => {
@@ -20,6 +22,11 @@ const loadSystem = db => {
           getStates: () => states.getStates(),
           onStateData: (topic, value) => states.onStateData(db, topic, value),
           unregister: (topic) => states.unregisterState(db, topic),
+        },
+        conditions: {
+          getConditions: conditions.getConditions,
+          addCondition: (name, eval) => conditions.addCondition(db, name, eval),
+          deleteCondition: (name) => conditions.deleteCondition(db, name),
         },
         events: {
           onEventData: (topic, value) => events.onEventData(db, topic, value),

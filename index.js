@@ -53,6 +53,7 @@ const start = ({ resourceFile, startMqtt }) => {
             },
             onEvent: (topic, message) => {
               console.log('got event: ', topic, ' message: ', message);
+              theSystem.events.onEventData(topic, message);
             }
           }).catch(() => console.log('could not connect to mqtt'));
         }).catch(err => {
@@ -74,7 +75,6 @@ const init = ({
   if (typeof(resourceFile) !== typeof('')){
     throw (new Error("Resource file string must be defined"));
   }
-
 
   start({
     resourceFile,
