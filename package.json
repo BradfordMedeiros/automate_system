@@ -19,19 +19,12 @@
   },
   "homepage": "https://github.com/BradfordMedeiros/automate_core#readme",
   "dependencies": {
-    "body-parser": "^1.17.0",
-    "express": "^4.15.0",
-    "fs-extra": "^1.0.0",
-    "fs_mount_mqtt": "^1.0.1",
     "mosca": "^2.5.1",
     "mqtt": "^2.4.0",
-    "mqtt_mongo": "^1.0.3",
-    "natural": "^0.5.0",
-    "network": "^0.3.2",
-    "nodemon": "^1.11.0",
-    "sendmail": "^1.1.1",
     "sqlite3": "^3.1.8",
-    "wetty": "https://github.com/BradfordMedeiros/wetty.git",
     "when_do": "^1.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
