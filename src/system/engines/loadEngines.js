@@ -1,9 +1,9 @@
 const stateEngine = require('./states/stateEngine');
 const sequenceEngine = require('./sequence/sequenceEngine');
 
-const loadEngines = db => {
+const loadEngines = (db, getActions) => {
   const loadStateEngine = stateEngine.loadStateScripts(db);
-  const loadSequenceEngine = sequenceEngine.loadSequences(db);
+  const loadSequenceEngine = sequenceEngine.loadSequences(db, getActions);
 
   const enginesLoaded = Promise.all([loadStateEngine, loadSequenceEngine]);
 
