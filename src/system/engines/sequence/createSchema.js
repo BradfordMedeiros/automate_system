@@ -1,11 +1,20 @@
+/*
+
+    Each sequence -->
+      - sequence_sequence_name
+      - type: 'action'  value: actionName --> foreign key (on cascade delete)
+
+   sequences:
+      sequence_name
+ */
+
 
 const createSchema = db => new Promise((resolve, reject) => {
   db.open().catch(reject).then(database => {
     database.all(
-      `CREATE TABLE action_engine (
+      `CREATE TABLE sequence_engine (
         name TEXT UNIQUE,
-        topic	TEXT,
-        value	TEXT,
+        sequence_id INTEGER,
         PRIMARY KEY(name)
       );`, (err) => {
         database.close();
