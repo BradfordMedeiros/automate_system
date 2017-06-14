@@ -3,8 +3,9 @@ const sequenceEngine = require('./sequence/sequenceEngine');
 
 const loadEngines = db => {
   const loadStateEngine = stateEngine.loadStateScripts(db);
+  const loadSequenceEngine = sequenceEngine.loadSequences(db);
 
-  const enginesLoaded = Promise.all([loadStateEngine]);
+  const enginesLoaded = Promise.all([loadStateEngine, loadSequenceEngine]);
 
   return new Promise((resolve, reject) => {
     enginesLoaded.catch(reject).then(() => {
@@ -15,9 +16,9 @@ const loadEngines = db => {
           getStateScripts: stateEngine.getStateScripts,
         },
         sequenceEngine: {
-          createSequenceTable: sequenceName => sequenceEngine.createSequenceTable(db, sequenceName),
-          deleteSequenceTable: sequenceName => sequenceEngine.deleteSequenceTable(db, sequenceName),
-          createSequence : (sequenceName, actions) => sequenceEngine.createSequence(db, sequenceName, actions),
+          addSequence: (sequenceName, sequenceParts) => sequenceEngine.addSequence(db, sequenceName, sequenceParts),
+          deleteSequence: (sequenceName) => sequenceEngine.deleteSequence(db, sequenceName),
+          getSequences: sequenceEngine.getSequences,
         }
       };
       resolve(engines);

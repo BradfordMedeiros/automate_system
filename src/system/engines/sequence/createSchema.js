@@ -14,7 +14,7 @@ const createSchema = db => new Promise((resolve, reject) => {
     database.all(
       `CREATE TABLE sequence_engine (
         name TEXT UNIQUE,
-        sequence_id INTEGER,
+        parts TEXT,
         PRIMARY KEY(name)
       );`, (err) => {
         database.close();
