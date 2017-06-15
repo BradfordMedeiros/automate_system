@@ -52,8 +52,11 @@ const start = ({ resourceFile, startMqtt }) => {
               theSystem.baseSystem.actions.onActionData(topic, message);
             },
             onEvent: (topic, message) => {
-              theSystem.baseSystem.events.onEventData(topic, message);
-            }
+              theSystem.logging.events.onEventData(topic, message);
+            },
+            onHistory: (topic, message) => {
+              theSystem.logging.history.onHistoryData(topic, message);
+            },
           }).catch(() => console.log('could not connect to mqtt'));
         }).catch(err => {
           console.log('System: Could not start mqtt broker');

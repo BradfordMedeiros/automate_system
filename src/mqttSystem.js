@@ -2,7 +2,7 @@
 const mqtt =  require('mqtt');
 const MQTT_URL = 'http://127.0.0.1:1883';
 
-const handleMessage = (topic, message, { onState, onAction, onEvent }) => {
+const handleMessage = (topic, message, { onState, onAction, onEvent, onHistory }) => {
   if (topic.indexOf('/states') === 0 || topic.indexOf('states') === 0){
     if (onState){
       onState(topic, message.toString());
@@ -16,9 +16,13 @@ const handleMessage = (topic, message, { onState, onAction, onEvent }) => {
       onEvent(topic, message.toString());
     }
   }
+
+  if (onHistory){
+    onHistory(topic, message.toString());
+  }
 };
 
-const listenForMqttMessage = ({ onState, onAction, onEvent } = {}) => {
+const listenForMqttMessage = ({ onState, onAction, onEvent, onHistory } = {}) => {
   const client = mqtt.connect(MQTT_URL);
 
   c = client;
@@ -27,16 +31,9 @@ const listenForMqttMessage = ({ onState, onAction, onEvent } = {}) => {
     client.on('connect', () => {
       clearTimeout(handle);
 
-      client.subscribe('/actions/'+'#');
-      client.subscribe('actions/'+'#');
+      client.subscribe('#');
 
-      client.subscribe('/states/'+'#');
-      client.subscribe('states/'+'#');
-
-      client.subscribe('/events/'+'#');
-      client.subscribe('events'+'#');
-
-      client.on('message', (topic, message) => handleMessage(topic, message, { onState, onAction, onEvent } ));
+      client.on('message', (topic, message) => handleMessage(topic, message, { onState, onAction, onEvent, onHistory }));
 
       resolve(client);
     });

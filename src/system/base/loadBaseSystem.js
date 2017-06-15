@@ -1,7 +1,7 @@
 const actions = require('./actions/actions');
 const states = require('./states/states');
 const conditions = require('./conditions/conditions');
-const events = require('./events/events');
+//const events = require('./events/events');
 
 const loadSystem = db => {
   const loadActions = actions.loadActions(db);
@@ -28,10 +28,10 @@ const loadSystem = db => {
           deleteCondition: (name) => conditions.deleteCondition(db, name),
           getStates: conditions.getStates,
         },
-        events: {
+        /*events: {
           onEventData: (topic, value) => events.onEventData(db, topic, value),
           getEvents: () => events.getEvents(db),
-        }
+        }*/
       });
       resolve(system);
     })
