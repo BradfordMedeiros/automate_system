@@ -25,14 +25,12 @@ const handleMessage = (topic, message, { onState, onAction, onEvent, onHistory }
 const listenForMqttMessage = ({ onState, onAction, onEvent, onHistory } = {}) => {
   const client = mqtt.connect(MQTT_URL);
 
-  c = client;
   return new Promise((resolve, reject) => {
     const handle = setTimeout(reject, 5000);
     client.on('connect', () => {
       clearTimeout(handle);
 
       client.subscribe('#');
-
       client.on('message', (topic, message) => handleMessage(topic, message, { onState, onAction, onEvent, onHistory }));
 
       resolve(client);
