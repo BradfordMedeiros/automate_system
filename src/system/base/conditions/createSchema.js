@@ -1,20 +1,20 @@
 
 const createSchema = db => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     database.all(
       `CREATE TABLE conditions (
-        name TEXT,
-        eval TEXT,
+        name TEXT NOT NULL,
+        eval TEXT NOT NULL,
         PRIMARY KEY(name)
       );`, (err) => {
-        database.close();
+        //database.close();
         if (err){
           reject(err);
         }else{
           resolve();
         }
       });
-  });
+  }).catch(reject);
 });
 
 module.exports = createSchema;

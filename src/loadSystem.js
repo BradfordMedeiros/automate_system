@@ -9,22 +9,22 @@ const loadSystem = db => {
 
   return new Promise((resolve, reject) => {
     const system = {};
-    loadSystemPromise.catch(reject).then(() => {
-      loadLoggingPromise.catch(reject).then(logging => {
+    loadSystemPromise.then(() => {
+      loadLoggingPromise.then(logging => {
         system.logging = logging;
-      });
-      loadBaseSystemPromise.catch(reject).then(baseSystem => {
+      }).catch(reject);
+      loadBaseSystemPromise.then(baseSystem => {
         system.baseSystem = baseSystem;
         loadEngines(
           db,
           system.baseSystem.actions.getActions,
           system.baseSystem.conditions.getConditions
-        ).catch(reject).then(engines => {
+        ).then(engines => {
           system.engines = engines;
           resolve(system);
-        });
-      });
-    });
+        }).catch(reject);
+      }).catch(reject);
+    }).catch(reject);
   });
 };
 

@@ -10,7 +10,7 @@ const loadEngines = (db, getActions, getConditions) => {
   const enginesLoaded = Promise.all([loadStateEngine, loadSequenceEngine, loadRuleEngine]);
 
   return new Promise((resolve, reject) => {
-    enginesLoaded.catch(reject).then(() => {
+    enginesLoaded.then(() => {
       const engines = {
         stateEngine: {
           addStateScript: (name, topic, eval) => stateEngine.addStateScript(db, name, topic, eval),
@@ -29,7 +29,7 @@ const loadEngines = (db, getActions, getConditions) => {
         }
       };
       resolve(engines);
-    });
+    }).catch(reject);
   });
 };
 

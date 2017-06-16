@@ -3,31 +3,31 @@ let actions = { };
 
 
 const getActionsFromDb = db => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     database.all('SELECT * FROM actions', (err, actions) => {
-      database.close();
+      //database.close();
       if (err){
         reject(err);
       }else{
         resolve(actions);
       }
     });
-  });
+  }).catch(reject);
 });
 
 const saveActionToDb = (db, topic, value) => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     const query = `INSERT OR REPLACE INTO actions (topic, value) values ('${topic}', '${value}')`;
     console.log(query);
     database.all(query, (err) => {
-      database.close();
+      //database.close();
       if (err){
         reject(err);
       }else{
         resolve();
       }
     });
-  });
+  }).catch(reject);
 });
 
 const addActionData = (topic, value) => {
@@ -47,9 +47,9 @@ const onActionData = (db, topic, value) => new Promise((resolve, reject) => {
 });
 
 const unregisterAction = (db, topic) => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     database.all(`DELETE FROM actions WHERE topic = ('${topic}')`, (err) => {
-      database.close();
+      //database.close();
       delete actions[topic];
       if (err){
         reject(err);
@@ -57,19 +57,19 @@ const unregisterAction = (db, topic) => new Promise((resolve, reject) => {
         resolve();
       }
     });
-  });
+  }).catch(reject);
 });
 
 const loadActions = db => new Promise((resolve, reject) => {
-  getActionsFromDb(db).catch(reject).then(actions => {
+  getActionsFromDb(db).then(actions => {
     actions.forEach(action => {
       addActionData(action.topic, action.value)
     });
     resolve();
-  });
+  }).catch(reject);
 });
 
-const getActions = () => Object.keys(actions).map(action => actions[action]);
+const getActions = () => actions;
 
 module.exports = {
   getActions,

@@ -2,30 +2,30 @@
 let stateScripts = { };
 
 const getStateScriptsFromDb = db => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     database.all('SELECT * FROM state_engine', (err, actions) => {
-      database.close();
+      //database.close();
       if (err){
         reject(err);
       }else{
         resolve(actions);
       }
     });
-  });
+  }).catch(reject);
 });
 
 const saveStateScriptToDb = (db, stateScriptName, topic, eval) => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     const query = `INSERT OR REPLACE INTO state_engine (name, topic, eval) values ('${stateScriptName}', '${topic}','${eval}')`;
     database.all(query, (err) => {
-      database.close();
+      //database.close();
       if (err){
         reject(err);
       }else{
         resolve();
       }
     });
-  });
+  }).catch(reject);
 });
 
 
@@ -60,9 +60,9 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
 };
 
 const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     database.all(`DELETE FROM state_engine WHERE name = ('${stateScriptName}')`, (err) => {
-      database.close();
+      //database.close();
       stateScripts[stateScriptName].stop();
       delete stateScripts[stateScriptName];
       if (err){
@@ -71,19 +71,19 @@ const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject)
         resolve();
       }
     });
-  });
+  }).catch(reject);
 });
 
 const loadStateScripts = (db) => new Promise((resolve, reject) => {
-  getStateScriptsFromDb(db).catch(reject).then(stateScripts => {
-    stateScripts.forEach(stateScriptData => {
+  getStateScriptsFromDb(db).then(loadedStateScripts => {
+    loadedStateScripts.forEach(stateScriptData => {
       addStateScript(db,stateScriptData.name, stateScriptData.eval);
     });
     resolve();
-  });
+  }).catch(reject);
 });
 
-const getStateScripts = () => Object.keys(stateScripts).map(script => stateScripts[script]);
+const getStateScripts = () => stateScripts;
 
 module.exports = {
   addStateScript,

@@ -9,30 +9,30 @@ let getConditions = () => conditionGetter();
 let rules = { };
 
 const getRulesFromDb = db => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
-    database.all('SELECT * FROM rules_engine', (err, actions) => {
-      database.close();
+  db.open().then(database => {
+    database.all('SELECT * FROM rules_engine', (err, rules) => {
+      //database.close();
       if (err){
         reject(err);
       }else{
-        resolve(actions);
+        resolve(rules);
       }
     });
-  });
+  }).catch(reject);
 });
 
 const saveRuleToDb = (db, ruleName, conditionName, strategy, rate) => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     const query = `INSERT OR REPLACE INTO rules_engine (name, conditionName, strategy, rate) values ('${ruleName}', '${conditionName}', '${strategy}', ${rate})`;
     database.run(query, (err) => {
-      database.close();
+      //database.close();
       if (err){
         reject(err);
       }else{
         resolve();
       }
     });
-  });
+  }).catch(reject);
 });
 
 const addRule = (db, ruleName, conditionName, strategy, rate) => {
@@ -49,9 +49,9 @@ const addRule = (db, ruleName, conditionName, strategy, rate) => {
 };
 
 const deleteRule = (db, ruleName) => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     database.run(`DELETE FROM rules_engine WHERE name = ('${ruleName}')`, (err) => {
-      database.close();
+      // database.close();
       rules[ruleName].stop();
       delete rules[ruleName];
       if (err){
@@ -60,20 +60,20 @@ const deleteRule = (db, ruleName) => new Promise((resolve, reject) => {
         resolve();
       }
     });
-  });
+  }).catch(reject);
 });
 
 const loadRules = (db, getConditionsFunc) => new Promise((resolve, reject) => {
   getConditions = getConditionsFunc;
-  getRulesFromDb(db).catch(reject).then(rules => {
-    rules.forEach(rule => {
+  getRulesFromDb(db).then(loadedRules => {
+    /*loadedRules.forEach(rule => {
       addRule(db, rule.name, rule.conditionName, rule.strategy, rule.rate);
-    });
+    });*/
     resolve();
-  });
+  }).catch(reject);
 });
 
-const getRules = () => Object.keys(rules).map(rule => rules[rule]);
+const getRules = () => rules;
 
 module.exports = {
   addRule,

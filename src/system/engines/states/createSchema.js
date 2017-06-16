@@ -1,21 +1,21 @@
 
 const createSchema = db => new Promise((resolve, reject) => {
-  db.open().catch(reject).then(database => {
+  db.open().then(database => {
     database.all(
       `CREATE TABLE state_engine (
-        name TEXT UNIQUE,
-        topic	TEXT,
-        eval	TEXT,
+        name TEXT UNIQUE NOT NULL,
+        topic	TEXT NOT NULL,
+        eval	TEXT NOT NULL,
         PRIMARY KEY(name)
       );`, (err) => {
-        database.close();
+        //database.close();
         if (err){
           reject(err);
         }else{
           resolve();
         }
       });
-  });
+  }).catch(reject);
 });
 
 module.exports = createSchema;

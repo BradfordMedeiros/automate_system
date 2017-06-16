@@ -24,8 +24,8 @@ const migrate = db => {
       .hold(() => createRuleEngineSchema(db))
       .hold(() => createHistorySchema(db))
       .run()
-      .catch(reject)
-      .then(resolve);
+      .then(resolve)
+      .catch(reject);
   })
 };
 

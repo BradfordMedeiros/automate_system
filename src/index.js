@@ -62,7 +62,8 @@ const start = ({ resourceFile, startMqtt }) => {
           console.log('System: Could not start mqtt broker');
         })
       }
-    }).catch(() => {
+    }).catch((err) => {
+      console.log(err.stack)
       console.log('System: Could not load system')
     })
   }).catch(err => {

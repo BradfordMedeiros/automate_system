@@ -10,7 +10,7 @@ const loadSystem = db => {
   const systemLoaded = Promise.all([loadActions, loadStates]);
 
   const systemWithoutConditionsLoaded =  new Promise((resolve, reject) => {
-    systemLoaded.catch(reject).then(() => {
+    systemLoaded.then(() => {
       const system =  ({
         actions: {
           getActions: () => actions.getActions(),
@@ -26,20 +26,15 @@ const loadSystem = db => {
           getConditions: conditions.getConditions,
           addCondition: (name, eval) => conditions.addCondition(db, name, eval),
           deleteCondition: (name) => conditions.deleteCondition(db, name),
-          getStates: conditions.getStates,
         },
-        /*events: {
-          onEventData: (topic, value) => events.onEventData(db, topic, value),
-          getEvents: () => events.getEvents(db),
-        }*/
       });
       resolve(system);
-    })
+    }).catch(reject)
   });
 
   return new Promise((resolve, reject) => {
     systemWithoutConditionsLoaded.then(system => {
-      conditions.loadConditions(db, system.states.getStates).catch(reject).then(() => { resolve(system) });
+      conditions.loadConditions(db, system.states.getStates).then(() => { resolve(system) }).catch(reject);
     });
   });
 };

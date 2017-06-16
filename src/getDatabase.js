@@ -1,5 +1,6 @@
 
 const sqlite3 = require('sqlite3');
+const process = require('process');
 
 const turnOnForeignKeys = db => {
   return new Promise((resolve, reject) => {
@@ -7,7 +8,7 @@ const turnOnForeignKeys = db => {
       database.run(
         `PRAGMA foreign_keys = ON;`
         , (err) => {
-          database.close();
+          //database.close();
           if (err){
             reject(err);
           }else{
@@ -18,15 +19,26 @@ const turnOnForeignKeys = db => {
   })
 };
 
+let connection;
+process.on('exit', () => {
+  if (connection){
+    connection.close();
+  }
+});
+
 const getDatabase = databaseName => ({
   open: () => new Promise((resolve, reject) => {
-    const db  = new sqlite3.Database(databaseName, (err) => {
-      if (err){
-        reject(err);
-      }else{
-        resolve(db)
-      }
-    })
+    if (connection){
+      resolve(connection);
+    }else{
+      connection = new sqlite3.Database(databaseName, (err) => {
+        if (err){
+          reject(err);
+        }else{
+          resolve(connection)
+        }
+      })
+    }
   })
 });
 

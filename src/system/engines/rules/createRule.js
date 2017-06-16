@@ -1,5 +1,5 @@
 
-const createRule = (conditionName, conditions, strategy, rate) => {
+const createRule = (conditionName, getConditions, strategy, rate) => {
   return {
     run: () => {
       console.log('rule: run');
