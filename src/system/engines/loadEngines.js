@@ -1,21 +1,25 @@
-const stateEngine = require('./states/stateEngine');
+const stateScriptEngine = require('./stateScripts/stateEngine');
+const actionScriptEngine = require('./actionScripts/actionEngine');
 const sequenceEngine = require('./sequence/sequenceEngine');
 const ruleEngine = require('./rules/ruleEngine');
 
 const loadEngines = (db, getActions, getConditions) => {
-  const loadStateEngine = stateEngine.loadStateScripts(db);
+  const loadStateScriptEngine = stateScriptEngine.loadStateScripts(db);
   const loadSequenceEngine = sequenceEngine.loadSequences(db, getActions);
   const loadRuleEngine = ruleEngine.loadRules(db, getConditions);
 
-  const enginesLoaded = Promise.all([loadStateEngine, loadSequenceEngine, loadRuleEngine]);
+  const enginesLoaded = Promise.all([loadStateScriptEngine, loadSequenceEngine, loadRuleEngine]);
 
   return new Promise((resolve, reject) => {
     enginesLoaded.then(() => {
       const engines = {
-        stateEngine: {
-          addStateScript: (name, topic, eval) => stateEngine.addStateScript(db, name, topic, eval),
-          deleteStateScript: (name) => stateEngine.deleteStateScript(db, name),
-          getStateScripts: stateEngine.getStateScripts,
+        stateScriptEngine: {
+          addStateScript: (name, topic, eval) => stateScriptEngine.addStateScript(db, name, topic, eval),
+          deleteStateScript: (name) => stateScriptEngine.deleteStateScript(db, name),
+          getStateScripts: stateScriptEngine.getStateScripts,
+        },
+        actionScriptEngine: {
+          addActionScript: (actionScriptName, topic, script) => actionScriptEngine.addActionScript(db, actionScriptName, topic, script),
         },
         sequenceEngine: {
           addSequence: (sequenceName, sequenceParts) => sequenceEngine.addSequence(db, sequenceName, sequenceParts),

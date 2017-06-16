@@ -2,9 +2,12 @@ const fs = require('fs');
 const createActionSchema = require('../system/base/actions/createSchema');
 const createStateSchema = require('../system/base/states/createSchema');
 const createConditionSchema = require('../system/base/conditions/createSchema');
-const createStateEngineSchema = require('../system/engines/states/createSchema');
+
+const createStateScriptEngineSchema = require('../system/engines/stateScripts/createSchema');
+const createActionScriptEngineSchema = require('../system/engines/actionScripts/createSchema');
 const createSequenceEngineSchema = require('../system/engines/sequence/createSchema');
 const createRuleEngineSchema = require('../system/engines/rules/createSchema');
+
 const createEventSchema = require('../system/logging/events/createSchema');
 const createHistorySchema = require('../system/logging/history/createSchema');
 
@@ -19,7 +22,8 @@ const migrate = db => {
       .hold(() => createStateSchema(db))
       .hold(() => createEventSchema(db))
       .hold(() => createConditionSchema(db))
-      .hold(() => createStateEngineSchema(db))
+      .hold(() => createStateScriptEngineSchema(db))
+      .hold(() => createActionScriptEngineSchema(db))
       .hold(() => createSequenceEngineSchema(db))
       .hold(() => createRuleEngineSchema(db))
       .hold(() => createHistorySchema(db))

@@ -1,13 +1,5 @@
 
 
-
-/*automate_system.engines.rules.addRule({
-  ruleName: 'test condition',
-  condition: 'condition1',
-  strategy: 'always/positive edge/negative edge',
-  rate: 1000,
-});*/
-
 const createSchema = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     // note foreign keys suck in sqlite for now, update eventually if foreign keys start not to be shit
