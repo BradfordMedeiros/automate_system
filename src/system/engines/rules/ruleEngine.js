@@ -36,7 +36,7 @@ const saveRuleToDb = (db, ruleName, conditionName, strategy, rate) => new Promis
 });
 
 const addRule = (db, ruleName, conditionName, strategy, rate) => {
-  const ruleEval = createRule(conditionName, [], strategy, rate);
+  const ruleEval = createRule(conditionName, getConditions, strategy, rate);
   rules[ruleName] = {
     name: ruleName,
     conditionName,
@@ -66,9 +66,9 @@ const deleteRule = (db, ruleName) => new Promise((resolve, reject) => {
 const loadRules = (db, getConditionsFunc) => new Promise((resolve, reject) => {
   getConditions = getConditionsFunc;
   getRulesFromDb(db).then(loadedRules => {
-    /*loadedRules.forEach(rule => {
+    loadedRules.forEach(rule => {
       addRule(db, rule.name, rule.conditionName, rule.strategy, rule.rate);
-    });*/
+    });
     resolve();
   }).catch(reject);
 });

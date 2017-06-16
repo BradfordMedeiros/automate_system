@@ -22,7 +22,7 @@
     "mosca": "^2.5.1",
     "mqtt": "^2.4.0",
     "sqlite3": "^3.1.8",
-    "when_do": "^1.0.6"
+    "when_do": "^1.0.8"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"

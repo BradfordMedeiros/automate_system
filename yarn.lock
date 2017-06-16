@@ -2796,9 +2796,9 @@ when@~3.6.2:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/when/-/when-3.6.4.tgz#473b517ec159e2b85005497a13983f095412e34e"
 
-when_do@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/when_do/-/when_do-1.0.6.tgz#b8705599561c54a72e622644ceee73c82d0f1672"
+when_do@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/when_do/-/when_do-1.0.8.tgz#2b542d4da527c5daf8db22ea85864a53b20db7a6"
 
 which@1:
   version "1.2.14"
