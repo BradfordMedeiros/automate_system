@@ -15,7 +15,11 @@ const loadSystem = db => {
       });
       loadBaseSystemPromise.catch(reject).then(baseSystem => {
         system.baseSystem = baseSystem;
-        loadEngines(db, system.baseSystem.actions.getActions).catch(reject).then(engines => {
+        loadEngines(
+          db,
+          system.baseSystem.actions.getActions,
+          system.baseSystem.conditions.getConditions
+        ).catch(reject).then(engines => {
           system.engines = engines;
           resolve(system);
         });

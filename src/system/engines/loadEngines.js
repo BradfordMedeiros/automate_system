@@ -1,11 +1,13 @@
 const stateEngine = require('./states/stateEngine');
 const sequenceEngine = require('./sequence/sequenceEngine');
+const ruleEngine = require('./rules/ruleEngine');
 
-const loadEngines = (db, getActions) => {
+const loadEngines = (db, getActions, getConditions) => {
   const loadStateEngine = stateEngine.loadStateScripts(db);
   const loadSequenceEngine = sequenceEngine.loadSequences(db, getActions);
+  const loadRuleEngine = ruleEngine.loadRules(db, getConditions);
 
-  const enginesLoaded = Promise.all([loadStateEngine, loadSequenceEngine]);
+  const enginesLoaded = Promise.all([loadStateEngine, loadSequenceEngine, loadRuleEngine]);
 
   return new Promise((resolve, reject) => {
     enginesLoaded.catch(reject).then(() => {
@@ -19,6 +21,11 @@ const loadEngines = (db, getActions) => {
           addSequence: (sequenceName, sequenceParts) => sequenceEngine.addSequence(db, sequenceName, sequenceParts),
           deleteSequence: (sequenceName) => sequenceEngine.deleteSequence(db, sequenceName),
           getSequences: sequenceEngine.getSequences,
+        },
+        ruleEngine: {
+          addRule: (ruleName, conditionName, strategy, rate) => ruleEngine.addRule(db, ruleName, conditionName, strategy, rate),
+          deleteRule: (ruleName) => ruleEngine.deleteRule(db, ruleName),
+          getRules: ruleEngine.getRules,
         }
       };
       resolve(engines);

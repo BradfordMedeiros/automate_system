@@ -4,11 +4,13 @@ const createStateSchema = require('../system/base/states/createSchema');
 const createConditionSchema = require('../system/base/conditions/createSchema');
 const createStateEngineSchema = require('../system/engines/states/createSchema');
 const createSequenceEngineSchema = require('../system/engines/sequence/createSchema');
+const createRuleEngineSchema = require('../system/engines/rules/createSchema');
 const createEventSchema = require('../system/logging/events/createSchema');
 const createHistorySchema = require('../system/logging/history/createSchema');
 
 const getDatabase = require('../getDatabase');
 const sequencer = require('when_do').sequencer;
+
 
 const migrate = db => {
   return new Promise((resolve, reject) => {
@@ -19,6 +21,7 @@ const migrate = db => {
       .hold(() => createConditionSchema(db))
       .hold(() => createStateEngineSchema(db))
       .hold(() => createSequenceEngineSchema(db))
+      .hold(() => createRuleEngineSchema(db))
       .hold(() => createHistorySchema(db))
       .run()
       .catch(reject)
