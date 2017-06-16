@@ -16,7 +16,6 @@ const getStatesFromDb = db => new Promise((resolve, reject) => {
 const saveStateToDb = (db, topic, value) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all(`INSERT OR REPLACE INTO states (topic, value) values ('${topic}','${value}')`, (err) => {
-      //database.close();
       if (err){
         reject(err);
       }else{
@@ -40,7 +39,6 @@ const addStateData = (topic, value) => {
 const unregisterState = (db, topic) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all(`DELETE FROM states WHERE topic = ('${topic}')`, (err) => {
-      //database.close();
       delete states[topic];
       if (err){
         reject(err);
@@ -52,6 +50,7 @@ const unregisterState = (db, topic) => new Promise((resolve, reject) => {
 });
 
 const onStateData = (db, topic, value) => new Promise((resolve, reject) => {
+  console.log('add state data');
   addStateData(topic, value);
   saveStateToDb(db, topic, value).then(resolve).catch(reject);
 });

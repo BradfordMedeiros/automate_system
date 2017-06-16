@@ -5,9 +5,16 @@ const getDatabase = require('./getDatabase');
 const startMqttBroker = require('./environment/startMqttBroker');
 const mqttSystem = require('./mqttSystem');
 
-process.on("unhandledRejection", function (err) {
+/*process.on("unhandledRejection", function (err) {
   console.error("unhandledRejection: " + err.stack); // or whatever.
-});
+});*/
+
+const handleError = err => {
+  console.error('Error: ', err);
+  if (err){
+    console.error(err.stack);
+  }
+}
 
 const migrateSystem = resourceFile => {
   return new Promise((resolve, reject) => {
@@ -46,16 +53,16 @@ const start = ({ resourceFile, startMqtt }) => {
           console.log('System: started mqtt broker');
           mqttSystem({
             onState: (topic, messsage) => {
-              theSystem.baseSystem.states.onStateData(topic, messsage);
+              theSystem.baseSystem.states.onStateData(topic, messsage).catch(handleError);
             },
             onAction: (topic, message) => {
-              theSystem.baseSystem.actions.onActionData(topic, message);
+              theSystem.baseSystem.actions.onActionData(topic, message).catch(handleError);
             },
             onEvent: (topic, message) => {
-              theSystem.logging.events.onEventData(topic, message);
+              theSystem.logging.events.onEventData(topic, message).catch(handleError);
             },
             onHistory: (topic, message) => {
-              theSystem.logging.history.onHistoryData(topic, message);
+              theSystem.logging.history.onHistoryData(topic, message).catch(handleError);
             },
           }).catch(() => console.log('could not connect to mqtt'));
         }).catch(err => {

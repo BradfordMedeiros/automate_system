@@ -16,8 +16,7 @@ const getHistory = db => {
 
 const saveHistoryToDb = (db, topic, value) => new Promise((resolve, reject) => {
   db.open().then(database => {
-    database.all(`INSERT INTO history (topic, value) values ('${topic}', '${value}')`, (err) => {
-      //database.close();
+    database.run(`INSERT INTO history (topic, value) values ('${topic}', '${value}')`, (err) => {
       if (err){
         reject(err);
       }else{
@@ -28,7 +27,7 @@ const saveHistoryToDb = (db, topic, value) => new Promise((resolve, reject) => {
 });
 
 const onHistoryData = (db, topic, value) => new Promise((resolve, reject) => {
-  return saveHistoryToDb(db, topic, value).then(reject).catch(reject);
+  return saveHistoryToDb(db, topic, value).then(resolve).catch(reject);
 });
 
 module.exports = {
