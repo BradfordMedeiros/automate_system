@@ -1,4 +1,5 @@
 const process = require('process');
+const path = require('path');
 const migrate = require('./environment/migrate');
 const loadSystem = require('./loadSystem');
 const getDatabase = require('./getDatabase');
@@ -57,6 +58,17 @@ const start = ({ resourceFile, startMqtt }) => {
             },
             onAction: (topic, message) => {
               theSystem.baseSystem.actions.onActionData(topic, message).catch(handleError);
+            },
+            onSequence: (topic, message) => {
+              // match the sequence and call execute
+              const sequenceName = topic.split('/').filter(x  => x.length > 0).slice(1).join('/');
+              const matchingSequence = theSystem.engines.sequenceEngine.getSequences()[sequenceName];
+              if (matchingSequence){
+                console.log('found a match');
+                matchingSequence.run();
+              }else{
+                console.log('no match for ', topic);
+              }
             },
             onEvent: (topic, message) => {
               theSystem.logging.events.onEventData(topic, message).catch(handleError);
