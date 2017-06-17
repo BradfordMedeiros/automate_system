@@ -21,11 +21,15 @@ const getRulesFromDb = db => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const saveRuleToDb = (db, ruleName, conditionName, strategy, rate) => new Promise((resolve, reject) => {
+const saveRuleToDb = (db, ruleName, conditionName, strategy, rate, topic, value) => new Promise((resolve, reject) => {
   db.open().then(database => {
-    const query = `INSERT OR REPLACE INTO rules_engine (name, conditionName, strategy, rate) values ('${ruleName}', '${conditionName}', '${strategy}', ${rate})`;
+    const query = `
+    INSERT OR REPLACE INTO 
+      rules_engine 
+    (name, conditionName, strategy, rate, topic, value) 
+      values 
+    ('${ruleName}', '${conditionName}', '${strategy}', ${rate}, '${topic}', '${value}')`;
     database.run(query, (err) => {
-      //database.close();
       if (err){
         reject(err);
       }else{
@@ -35,8 +39,8 @@ const saveRuleToDb = (db, ruleName, conditionName, strategy, rate) => new Promis
   }).catch(reject);
 });
 
-const addRule = (db, ruleName, conditionName, strategy, rate) => {
-  const ruleEval = createRule(conditionName, getConditions, strategy, rate);
+const addRule = (db, ruleName, conditionName, strategy, rate, topic, value) => {
+  const ruleEval = createRule(conditionName, getConditions, strategy, rate, topic, value);
   rules[ruleName] = {
     name: ruleName,
     conditionName,
@@ -45,7 +49,7 @@ const addRule = (db, ruleName, conditionName, strategy, rate) => {
     run: ruleEval.run,
     stop: ruleEval.stop,
   };
-  return saveRuleToDb(db, ruleName, conditionName, strategy, rate);
+  return saveRuleToDb(db, ruleName, conditionName, strategy, rate, topic, value);
 };
 
 const deleteRule = (db, ruleName) => new Promise((resolve, reject) => {
@@ -67,7 +71,7 @@ const loadRules = (db, getConditionsFunc) => new Promise((resolve, reject) => {
   getConditions = getConditionsFunc;
   getRulesFromDb(db).then(loadedRules => {
     loadedRules.forEach(rule => {
-      addRule(db, rule.name, rule.conditionName, rule.strategy, rule.rate);
+      addRule(db, rule.name, rule.conditionName, rule.strategy, rule.rate, rule.topic, rule.value);
     });
     resolve();
   }).catch(reject);

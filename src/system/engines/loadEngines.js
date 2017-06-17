@@ -27,7 +27,7 @@ const loadEngines = (db, getActions, getConditions) => {
           getSequences: sequenceEngine.getSequences,
         },
         ruleEngine: {
-          addRule: (ruleName, conditionName, strategy, rate) => ruleEngine.addRule(db, ruleName, conditionName, strategy, rate),
+          addRule: (ruleName, conditionName, strategy, rate, topic, value) => ruleEngine.addRule(db, ruleName, conditionName, strategy, rate, topic, value),
           deleteRule: (ruleName) => ruleEngine.deleteRule(db, ruleName),
           getRules: ruleEngine.getRules,
         }

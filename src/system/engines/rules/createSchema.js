@@ -9,6 +9,8 @@ const createSchema = db => new Promise((resolve, reject) => {
         conditionName TEXT NOT NULL, 
         strategy TEXT NOT NULL, 
         rate INTEGER NOT NULL,
+        topic TEXT NOT NULL,
+        value TEXT NOT NULL,
         PRIMARY KEY(name),
         FOREIGN KEY (conditionName) REFERENCES conditions(name)
       );`, (err) => {

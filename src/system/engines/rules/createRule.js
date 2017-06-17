@@ -2,24 +2,13 @@
 const rules = require('when_do').rules;
 
 const strategyMapping = {
-  'positive-edge': (eval, rate) => {
-    console.log('creating transition to true: rate: ' ,rate);
-    console.log('eval is ', eval);
-    console.log('initial value: ', eval());
-    return rules.transitionToTrue(eval, undefined, rate)
-  },
+  'positive-edge': (eval, rate) =>  rules.transitionToTrue(eval, undefined, rate),
   'negative-edge': (eval, rate) => rules.transitionToFalse(eval, undefined, rate),
   'each': (eval, rate) => rules.each(eval, undefined, rate),
 };
 
 
-const createRule = (conditionName, getConditions, strategy, rate) => {
-
-  console.log('creating rule: ');
-  console.log('conditionName: ', conditionName);
-  console.log('strategy: ', strategy);
-  console.log('rate: ', rate);
-
+const createRule = (conditionName, getConditions, strategy, rate, topic, value) => {
   const condition = getConditions()[conditionName];
   if (condition === undefined){
     throw (new Error('Condition:  ', conditionName, ' is not an condition, so cannot make a rule'));
@@ -30,16 +19,14 @@ const createRule = (conditionName, getConditions, strategy, rate) => {
   }
 
   const getEvaluator = strategyMapping[strategy];
-  r = getEvaluator;
-  c = condition;
-  ra = rate;
 
   let handle;
   return {
-    run: () => {
+    run: publish => {
       if (!handle){
         handle = getEvaluator(condition.eval, rate).do(() => {
-          console.log('need to add a hook for something');
+          console.log('broadcast mqtt here: ', topic);
+          publish(topic, value);
         });
       }else{
         handle.resume();
