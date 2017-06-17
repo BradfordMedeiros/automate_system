@@ -5,7 +5,6 @@ let actions = { };
 const getActionsFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all('SELECT * FROM actions', (err, actions) => {
-      //database.close();
       if (err){
         reject(err);
       }else{

@@ -25,7 +25,6 @@ const saveSequenceToDb = (db,sequenceName, sequenceParts) => new Promise((resolv
   db.open().then(database => {
     const query = `INSERT OR REPLACE INTO sequence_engine (name, parts) values ('${sequenceName}', '${JSON.stringify(sequenceParts)}')`;
     database.run(query, (err) => {
-      //database.close();
       if (err){
         reject(err);
       }else{
@@ -47,7 +46,6 @@ const addSequence = (db, sequenceName, sequenceParts) => {
 const deleteSequence = (db, sequenceName) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.run(`DELETE FROM sequence_engine WHERE name = ('${sequenceName}')`, (err) => {
-      //database.close();
       delete sequences[sequenceName];
       if (err){
         reject(err);
