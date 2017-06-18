@@ -54,7 +54,6 @@ const listenForMqttMessage = ({ onState, onAction, onSequence, onEvent, onHistor
           onHistory
         })
       );
-
       resolve(client);
     });
     client.on('error', reject);
