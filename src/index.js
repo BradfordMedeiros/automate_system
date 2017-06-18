@@ -50,7 +50,7 @@ const start = ({ resourceFile, startMqtt }) => {
       const theSystem = system;
       sys = theSystem;
       if (startMqtt){
-        startMqttBroker().then(() => {
+        startMqttBroker().then(mqttClient => {
           console.log('System: started mqtt broker');
           mqttSystem({
             onState: (topic, messsage) => {
@@ -58,6 +58,11 @@ const start = ({ resourceFile, startMqtt }) => {
             },
             onAction: (topic, message) => {
               theSystem.baseSystem.actions.onActionData(topic, message).catch(handleError);
+              const data =  theSystem.engines.actionScriptEngine.onMqttTopic(topic, message);
+              data.forEach(item => {
+                console.log('to topic: ', item.toTopic);
+                console.log('message: ', item.value);
+              })
             },
             onSequence: (topic, message) => {
               // match the sequence and call execute

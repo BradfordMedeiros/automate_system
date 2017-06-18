@@ -20,7 +20,7 @@ const loadEngines = (db, getActions, getConditions) => {
           getStateScripts: stateScriptEngine.getStateScripts,
         },
         actionScriptEngine: {
-          addActionScript: (actionScriptName, topic, script) => actionScriptEngine.addActionScript(db, actionScriptName, topic, script),
+          addActionScript: (actionScriptName, topic, script, toTopic) => actionScriptEngine.addActionScript(db, actionScriptName, topic, script, toTopic),
           getActionScripts: actionScriptEngine.getActionScripts,
           onMqttTopic: actionScriptEngine.onMqttTopic,
         },

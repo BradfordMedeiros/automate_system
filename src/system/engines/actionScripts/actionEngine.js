@@ -14,14 +14,15 @@ const getActionScriptsFromDb = db => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const saveActionScriptToDb = (db, actionScriptName, topic, script) => new Promise((resolve, reject) => {
+const saveActionScriptToDb = (db, actionScriptName, topic, script, toTopic) => new Promise((resolve, reject) => {
   db.open().then(database => {
     const query = (
       `INSERT OR REPLACE INTO 
          action_engine 
-       (name, topic, script) 
+       (name, topic, script, toTopic) 
          values 
-       ('${actionScriptName}', '${topic}','${script}')`);
+       ('${actionScriptName}', '${topic}','${script}', '${toTopic}')`
+    );
 
     database.all(query, (err) => {
       if (err){
@@ -42,11 +43,12 @@ const transformActionScriptToString = (conditionString) => {
 };
 
 
-const addActionScript = (db,  actionScriptName, topic, script ) => {
+const addActionScript = (db,  actionScriptName, topic, script, toTopic ) => {
   const evalFunction = () => transformActionScriptToString(script)({  });
   actionScripts[actionScriptName] = {
     name: actionScriptName,
     topic,
+    toTopic,
     getValue: evalFunction
   };
   saveActionScriptToDb(db, actionScriptName, topic, script);
@@ -55,7 +57,6 @@ const addActionScript = (db,  actionScriptName, topic, script ) => {
 const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all(`DELETE FROM state_engine WHERE name = ('${stateScriptName}')`, (err) => {
-      //database.close();
       stateScripts[stateScriptName].stop();
       delete stateScripts[stateScriptName];
       if (err){
@@ -70,7 +71,7 @@ const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject)
 const loadActionScripts = (db) => new Promise((resolve, reject) => {
   getActionScriptsFromDb(db).then(loadedActionScripts => {
     loadedActionScripts.forEach(actionScriptData => {
-      addActionScript(db, actionScriptData.name, actionScriptData.topic, actionScriptData.script);
+      addActionScript(db, actionScriptData.name, actionScriptData.topic, actionScriptData.script, actionScriptData.toTopic);
     });
     resolve();
   }).catch(reject);
@@ -83,7 +84,7 @@ const onMqttTopic = (topic, message) => {
     .filter(actionScript => path.join('/actions',actionScripts[actionScript].topic) === topic)
     .map(actionScript => actionScripts[actionScript])
     .map(script => ({
-        topic: script.topic,
+        toTopic: script.toTopic,
         value: script.getValue(),
     }));
 };

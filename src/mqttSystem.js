@@ -49,8 +49,6 @@ const listenForMqttMessage = ({ onState, onAction, onSequence, onEvent, onHistor
     });
     client.on('error', reject);
   });
-
-  return client;
 };
 
 module.exports = listenForMqttMessage;
