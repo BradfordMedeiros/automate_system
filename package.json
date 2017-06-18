@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/BradfordMedeiros/automate_core#readme",
   "dependencies": {
+    "express": "^4.15.3",
     "mosca": "^2.5.1",
     "mqtt": "^2.4.0",
     "sqlite3": "^3.1.8",

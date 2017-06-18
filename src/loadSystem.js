@@ -1,14 +1,17 @@
 const loadBaseSystem = require('./system/base/loadBaseSystem');
 const loadEngines = require('./system/engines/loadEngines');
 const loadLogging = require('./system/logging/loadLogging');
+const loadBridges = require('./system/bridges/loadBridges');
 
 const loadSystem = db => {
+  const bridges = loadBridges();
   const loadBaseSystemPromise = loadBaseSystem(db);
   const loadLoggingPromise = loadLogging(db);
   const loadSystemPromise = Promise.all([loadBaseSystemPromise, loadLoggingPromise]);
 
   return new Promise((resolve, reject) => {
     const system = {};
+    system.bridges = bridges;
     loadSystemPromise.then(() => {
       loadLoggingPromise.then(logging => {
         system.logging = logging;

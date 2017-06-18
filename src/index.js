@@ -35,21 +35,23 @@ const migrateSystem = resourceFile => {
   });
 };
 
-const printStartMessage = ({ resourceFile, mqttPort }) => {
+const printStartMessage = ({ resourceFile, mqtt, httpBridge }) => {
   console.log('Starting automate core')
   console.log('Resource: ', resourceFile);
-  console.log('Mqtt Port: ', mqttPort);
+  console.log('Mqtt Port: ', mqtt.mqttPort);
+  console.log('Mqtt http Port: ', mqtt.httpPort);
+  console.log('Http bridge enabled: ', httpBridge.enabled);
+  console.log('http bridge port: ', httpBridge.port);
 };
 
-const start = ({ resourceFile, mqttPort, httpPort }) => {
+const start = ({ resourceFile, mqtt, httpBridge}) => {
 
   return new Promise((resolver, rejector) => {
-    printStartMessage({resourceFile});
+    printStartMessage({resourceFile, mqtt, httpBridge });
     migrateSystem(resourceFile).then(() => {
       loadSystem(getDatabase(resourceFile)).then(system => {
         const theSystem = system;
-        startMqttBroker({ mqttPort, httpPort }).then(mqttClient => {
-          console.log('System: started mqtt broker');
+        startMqttBroker({ mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort }).then(mqttClient => {
           mqttSystem({
             onState: (topic, messsage) => {
               theSystem.baseSystem.states.onStateData(topic, messsage).catch(handleError);
@@ -58,8 +60,6 @@ const start = ({ resourceFile, mqttPort, httpPort }) => {
               theSystem.baseSystem.actions.onActionData(topic, message).catch(handleError);
               const data = theSystem.engines.actionScriptEngine.onMqttTopic(topic, message);
               data.forEach(item => {
-                console.log('to topic: ', item.toTopic);
-                console.log('message: ', item.value);
                 client.publish(item.toTopic, item.value.toString(), (err) => {
                   console.log(err);
                 });
@@ -83,8 +83,13 @@ const start = ({ resourceFile, mqttPort, httpPort }) => {
               theSystem.logging.history.onHistoryData(topic, message).catch(handleError);
             },
           }, {
-            mqttPort,
-          }).then(() => resolver(theSystem)).catch(() => rejector('could not connect to mqtt'));
+            mqttPort: mqtt.mqttPort,
+          }).then(mqttClient => {
+            if (httpBridge.enabled === true){
+              theSystem.bridges.httpBridge.start(mqttClient.publish.bind(mqttClient), { httpBridgePort: httpBridge.port });
+            }
+            resolver(theSystem);
+          }).catch(() => rejector('could not connect to mqtt'));
         }).catch(err => {
           console.log('System: Could not start mqtt broker');
         })
@@ -101,8 +106,8 @@ const start = ({ resourceFile, mqttPort, httpPort }) => {
 
 const init = ({
   resourceFile,
-  mqttPort,
-  httpPort,
+  mqtt,
+  httpBridge,
 }) => {
   if (typeof(resourceFile) !== typeof('')){
     throw (new Error("Resource file string must be defined"));
@@ -110,8 +115,8 @@ const init = ({
 
   return start({
     resourceFile,
-    mqttPort,
-    httpPort,
+    mqtt,
+    httpBridge,
   })
 };
 

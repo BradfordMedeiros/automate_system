@@ -10,7 +10,15 @@ const automate_sys = require('./src/index');
 
 automate_sys.init({
   resourceFile: './test.db',
-  mqttPort: 1882,
-  httpPort: 4000,
-});
+
+  mqtt: {
+    mqttPort: 1882,
+    httpPort: 4000,
+  },
+  httpBridge: {
+    enabled: true,
+    port: 1657,
+  },
+}).then(system => sys = system);
+
 

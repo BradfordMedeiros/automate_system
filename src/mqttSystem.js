@@ -38,6 +38,7 @@ const listenForMqttMessage = ({ onState, onAction, onSequence, onEvent, onHistor
 
   return new Promise((resolve, reject) => {
     const handle = setTimeout(reject, 5000);
+    client.on('error', reject);
     client.on('connect', () => {
       clearTimeout(handle);
 
@@ -56,7 +57,6 @@ const listenForMqttMessage = ({ onState, onAction, onSequence, onEvent, onHistor
       );
       resolve(client);
     });
-    client.on('error', reject);
   });
 };
 

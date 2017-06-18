@@ -34,7 +34,6 @@ const saveSequenceToDb = (db,sequenceName, sequenceParts) => new Promise((resolv
 });
 
 const addSequence = (db, sequenceName, sequenceParts) => {
-  console.log('get actions: ', getActions);
   sequences[sequenceName] = {
     name: sequenceName,
     run: () => createSequence(sequenceParts, getActions).run(),
@@ -58,7 +57,6 @@ const deleteSequence = (db, sequenceName) => new Promise((resolve, reject) => {
 const loadSequences = (db, getActionsFunc) => new Promise((resolve, reject) => {
   getActions = getActionsFunc;
   getSequencesFromDb(db).then(loadedSequences => {
-    console.log('loaded sequences: ', loadedSequences);
     loadedSequences.forEach(sequence => {
       addSequence(db, sequence.name, JSON.parse(sequence.parts));
     })
