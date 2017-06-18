@@ -1,5 +1,5 @@
 
-const httpBridge = require('./httpBridge');
+const httpBridge = require('./httpBridge/httpBridge');
 
 const loadBridges = publishMqtt => ({
   httpBridge: ({
