@@ -1,10 +1,10 @@
 const mosca = require('mosca');
 
 //https://github.com/mcollina/mosca/blob/master/examples/Server_With_All_Interfaces-Settings.js
-const startMqttBroker = () => {
+const startMqttBroker = ({ port = 1883 } = { }) => {
   const moscaSetting = {
     interfaces: [
-      { type: "mqtt", port: 1883 },
+      { type: "mqtt", port },
       { type: "http", port: 4000 },
     ],
   };

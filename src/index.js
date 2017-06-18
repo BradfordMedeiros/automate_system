@@ -54,12 +54,15 @@ const start = ({ resourceFile }) => {
           onState: (topic, messsage) => {
             theSystem.baseSystem.states.onStateData(topic, messsage).catch(handleError);
           },
-          onAction: (topic, message) => {
+          onAction: (topic, message, client) => {
             theSystem.baseSystem.actions.onActionData(topic, message).catch(handleError);
             const data = theSystem.engines.actionScriptEngine.onMqttTopic(topic, message);
             data.forEach(item => {
               console.log('to topic: ', item.toTopic);
               console.log('message: ', item.value);
+              client.publish(item.toTopic, item.value.toString(), (err) => {
+                console.log(err);
+              });
             })
           },
           onSequence: (topic, message) => {
