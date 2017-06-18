@@ -1,4 +1,11 @@
 
+
+const mqttDataCache = { };
+const getMqttValue = topic => {
+  return mqttDataCache[topic];
+};
+
+
 const getHistory = db => {
   return new Promise((resolve, reject) => {
     db.open().then(database => {
@@ -26,10 +33,13 @@ const saveHistoryToDb = (db, topic, value) => new Promise((resolve, reject) => {
 });
 
 const onHistoryData = (db, topic, value) => new Promise((resolve, reject) => {
+  console.log('on history data: ');
+  mqttDataCache[topic] = value;
   return saveHistoryToDb(db, topic, value).then(resolve).catch(reject);
 });
 
 module.exports = {
   onHistoryData,
   getHistory,
+  getMqttValue,
 };

@@ -11,6 +11,7 @@ const loadLogging = db => {
       history: {
         onHistoryData: (topic, value) => history.onHistoryData(db, topic, value),
         getHistory: () => history.getHistory(db),
+        getMqttValue: history.getMqttValue,
       },
     };
     resolve(logging);

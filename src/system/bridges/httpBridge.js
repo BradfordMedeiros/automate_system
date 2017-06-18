@@ -28,7 +28,7 @@ function rawBodyMiddleware(req, res, next) {
   });
 }
 
-const startBridge = (publishMqtt, { httpBridgePort = 1656} = {}) => {
+const startBridge = (publishMqtt, getMqttValue, { httpBridgePort = 1656} = {}) => {
   if (typeof(publishMqtt) !== 'function'){
     throw (new Error('publishMqtt is not defined, cannot start the bridge'));
   }
@@ -36,6 +36,13 @@ const startBridge = (publishMqtt, { httpBridgePort = 1656} = {}) => {
   return new Promise((resolve, reject) => {
     const app = express();
     app.use(rawBodyMiddleware);
+
+    app.get('*', (req,res) => {
+      const mqttTopic = req.url;
+      const mqttData = getMqttValue(mqttTopic);
+      publishMqtt(mqttTopic, mqttData);
+      res.send(mqttData);
+    });
 
     app.post('*', (req, res) => {
       const mqttTopic = req.url;

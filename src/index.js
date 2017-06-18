@@ -86,7 +86,11 @@ const start = ({ resourceFile, mqtt, httpBridge}) => {
             mqttPort: mqtt.mqttPort,
           }).then(mqttClient => {
             if (httpBridge.enabled === true){
-              theSystem.bridges.httpBridge.start(mqttClient.publish.bind(mqttClient), { httpBridgePort: httpBridge.port });
+              theSystem.bridges.httpBridge.start(
+                mqttClient.publish.bind(mqttClient),
+                theSystem.logging.history.getMqttValue.bind(theSystem.logging.history),
+                { httpBridgePort: httpBridge.port }
+              );
             }
             resolver(theSystem);
           }).catch(() => rejector('could not connect to mqtt'));
