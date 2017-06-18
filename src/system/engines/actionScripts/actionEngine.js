@@ -1,3 +1,4 @@
+const path = require('path');
 
 let actionScripts = { };
 
@@ -15,7 +16,13 @@ const getActionScriptsFromDb = db => new Promise((resolve, reject) => {
 
 const saveActionScriptToDb = (db, actionScriptName, topic, script) => new Promise((resolve, reject) => {
   db.open().then(database => {
-    const query = `INSERT OR REPLACE INTO action_engine (name, topic, script) values ('${actionScriptName}', '${topic}','${script}')`;
+    const query = (
+      `INSERT OR REPLACE INTO 
+         action_engine 
+       (name, topic, script) 
+         values 
+       ('${actionScriptName}', '${topic}','${script}')`);
+
     database.all(query, (err) => {
       if (err){
         reject(err);
@@ -36,24 +43,12 @@ const transformActionScriptToString = (conditionString) => {
 
 
 const addActionScript = (db,  actionScriptName, topic, script ) => {
-  //let handle = undefined;
-
-  //const evalFunction = () => transformActionScriptToString(script)({  });
-  //actionScripts[actionScriptName] = {
-  //  name: actionScriptName,
- //   topic,
-    /*eval: evalFunction,
-    run: publish => {
-      if (typeof(publish) !== 'function'){
-        throw (new Error('Publish must be function'));
-      }
-      handle = setInterval(() => {
-        const value = evalFunction();
-        publish(topic, value.toString());
-      }, 1000);
-    },*/
-    //stop: () => clearInterval(handle),
-  //};
+  const evalFunction = () => transformActionScriptToString(script)({  });
+  actionScripts[actionScriptName] = {
+    name: actionScriptName,
+    topic,
+    getValue: evalFunction
+  };
   saveActionScriptToDb(db, actionScriptName, topic, script);
 };
 
@@ -75,7 +70,7 @@ const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject)
 const loadActionScripts = (db) => new Promise((resolve, reject) => {
   getActionScriptsFromDb(db).then(loadedActionScripts => {
     loadedActionScripts.forEach(actionScriptData => {
-      //addActionScript(db,actionScriptData.name, actionScriptData.eval);
+      addActionScript(db, actionScriptData.name, actionScriptData.topic, actionScriptData.script);
     });
     resolve();
   }).catch(reject);
@@ -83,10 +78,21 @@ const loadActionScripts = (db) => new Promise((resolve, reject) => {
 
 const getActionScripts = () => actionScripts;
 
+const onMqttTopic = (topic, message) => {
+  return Object.keys(actionScripts)
+    .filter(actionScript => path.join('/actions',actionScripts[actionScript].topic) === topic)
+    .map(actionScript => actionScripts[actionScript])
+    .map(script => ({
+        topic: script.topic,
+        value: script.getValue(),
+    }));
+};
+
 module.exports = {
   //addStateScript,
   //deleteStateScript,
-  //getStateScripts,
-  //loadStateScripts,
+  getActionScripts,
+  loadActionScripts,
   addActionScript,
+  onMqttTopic,
 };

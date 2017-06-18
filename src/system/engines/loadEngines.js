@@ -5,10 +5,11 @@ const ruleEngine = require('./rules/ruleEngine');
 
 const loadEngines = (db, getActions, getConditions) => {
   const loadStateScriptEngine = stateScriptEngine.loadStateScripts(db);
+  const loadActionEngine = actionScriptEngine.loadActionScripts(db);
   const loadSequenceEngine = sequenceEngine.loadSequences(db, getActions);
   const loadRuleEngine = ruleEngine.loadRules(db, getConditions);
 
-  const enginesLoaded = Promise.all([loadStateScriptEngine, loadSequenceEngine, loadRuleEngine]);
+  const enginesLoaded = Promise.all([loadStateScriptEngine, loadActionEngine, loadSequenceEngine, loadRuleEngine]);
 
   return new Promise((resolve, reject) => {
     enginesLoaded.then(() => {
@@ -20,6 +21,8 @@ const loadEngines = (db, getActions, getConditions) => {
         },
         actionScriptEngine: {
           addActionScript: (actionScriptName, topic, script) => actionScriptEngine.addActionScript(db, actionScriptName, topic, script),
+          getActionScripts: actionScriptEngine.getActionScripts,
+          onMqttTopic: actionScriptEngine.onMqttTopic,
         },
         sequenceEngine: {
           addSequence: (sequenceName, sequenceParts) => sequenceEngine.addSequence(db, sequenceName, sequenceParts),
