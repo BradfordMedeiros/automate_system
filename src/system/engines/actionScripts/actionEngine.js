@@ -51,7 +51,7 @@ const addActionScript = (db,  actionScriptName, topic, script, toTopic ) => {
     toTopic,
     getValue: evalFunction
   };
-  saveActionScriptToDb(db, actionScriptName, topic, script);
+  saveActionScriptToDb(db, actionScriptName, topic, script, toTopic);
 };
 
 const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject) => {
