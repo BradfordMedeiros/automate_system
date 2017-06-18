@@ -7,7 +7,6 @@ const createSchema = db => new Promise((resolve, reject) => {
         value	TEXT,
         timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
       );`, (err) => {
-        //database.close();
         if (err){
           reject(err);
         }else{

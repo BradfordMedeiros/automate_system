@@ -4,7 +4,6 @@ let stateScripts = { };
 const getStateScriptsFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all('SELECT * FROM state_engine', (err, actions) => {
-      //database.close();
       if (err){
         reject(err);
       }else{
@@ -18,7 +17,6 @@ const saveStateScriptToDb = (db, stateScriptName, topic, eval) => new Promise((r
   db.open().then(database => {
     const query = `INSERT OR REPLACE INTO state_engine (name, topic, eval) values ('${stateScriptName}', '${topic}','${eval}')`;
     database.all(query, (err) => {
-      //database.close();
       if (err){
         reject(err);
       }else{

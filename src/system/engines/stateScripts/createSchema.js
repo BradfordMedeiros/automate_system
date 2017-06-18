@@ -8,7 +8,6 @@ const createSchema = db => new Promise((resolve, reject) => {
         eval	TEXT NOT NULL,
         PRIMARY KEY(name)
       );`, (err) => {
-        //database.close();
         if (err){
           reject(err);
         }else{

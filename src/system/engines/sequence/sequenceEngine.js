@@ -11,7 +11,6 @@ let sequences = { };
 const getSequencesFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all('SELECT * FROM sequence_engine', (err, sequences) => {
-      //database.close();
       if (err){
         reject(err);
       }else{

@@ -11,7 +11,6 @@ let rules = { };
 const getRulesFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all('SELECT * FROM rules_engine', (err, rules) => {
-      //database.close();
       if (err){
         reject(err);
       }else{

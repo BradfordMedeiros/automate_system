@@ -3,7 +3,6 @@ const getEvents = db => {
   return new Promise((resolve, reject) => {
     db.open().then(database => {
       database.all(`SELECT * FROM events`, (err, values) => {
-        //database.close();
         if (err) {
           reject(err);
         } else {
@@ -17,7 +16,6 @@ const getEvents = db => {
 const saveEventToDb = (db, topic, value) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all(`INSERT INTO events (topic, value) values ('${topic}', '${value}')`, (err) => {
-      //database.close();
       if (err){
         reject(err);
       }else{

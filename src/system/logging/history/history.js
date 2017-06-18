@@ -3,7 +3,6 @@ const getHistory = db => {
   return new Promise((resolve, reject) => {
     db.open().then(database => {
       database.all(`SELECT * FROM history`, (err, values) => {
-        //database.close();
         if (err) {
           reject(err);
         } else {
