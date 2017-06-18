@@ -1,6 +1,5 @@
 
 const mqtt =  require('mqtt');
-const MQTT_URL = 'http://127.0.0.1:1883';
 
 const handleMessage = (topic, message, client, {
   onState,
@@ -34,8 +33,8 @@ const handleMessage = (topic, message, client, {
   }
 };
 
-const listenForMqttMessage = ({ onState, onAction, onSequence, onEvent, onHistory } = {}) => {
-  const client = mqtt.connect(MQTT_URL);
+const listenForMqttMessage = ({ onState, onAction, onSequence, onEvent, onHistory } = {}, { mqttPort = 1883}) => {
+  const client = mqtt.connect(`http://127.0.0.1:${mqttPort}`);
 
   return new Promise((resolve, reject) => {
     const handle = setTimeout(reject, 5000);

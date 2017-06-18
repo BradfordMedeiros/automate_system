@@ -41,14 +41,14 @@ const printStartMessage = ({ resourceFile, mqttPort }) => {
   console.log('Mqtt Port: ', mqttPort);
 };
 
-const start = ({ resourceFile }) => {
+const start = ({ resourceFile, mqttPort, httpPort }) => {
   printStartMessage({resourceFile});
   migrateSystem(resourceFile).then(() => {
     loadSystem(getDatabase(resourceFile)).then(system => {
       console.log('System: Loaded system');
       const theSystem = system;
       sys = theSystem;
-      startMqttBroker().then(mqttClient => {
+      startMqttBroker({ mqttPort, httpPort }).then(mqttClient => {
         console.log('System: started mqtt broker');
         mqttSystem({
           onState: (topic, messsage) => {
@@ -82,6 +82,8 @@ const start = ({ resourceFile }) => {
           onHistory: (topic, message) => {
             theSystem.logging.history.onHistoryData(topic, message).catch(handleError);
           },
+        }, {
+          mqttPort,
         }).catch(() => console.log('could not connect to mqtt'));
       }).catch(err => {
         console.log('System: Could not start mqtt broker');
@@ -98,7 +100,8 @@ const start = ({ resourceFile }) => {
 
 const init = ({
   resourceFile,
-  startMqtt = false,
+  mqttPort,
+  httpPort,
 }) => {
   if (typeof(resourceFile) !== typeof('')){
     throw (new Error("Resource file string must be defined"));
@@ -106,7 +109,8 @@ const init = ({
 
   start({
     resourceFile,
-    startMqtt: startMqtt,
+    mqttPort,
+    httpPort,
   })
 };
 
