@@ -21,6 +21,7 @@ const loadEngines = (db, getActions, getConditions) => {
         },
         actionScriptEngine: {
           addActionScript: (actionScriptName, topic, script, toTopic) => actionScriptEngine.addActionScript(db, actionScriptName, topic, script, toTopic),
+          deleteActionScript: (actionScriptName) => actionScriptEngine.deleteActionScript(db, actionScriptName),
           getActionScripts: actionScriptEngine.getActionScripts,
           onMqttTopic: actionScriptEngine.onMqttTopic,
         },

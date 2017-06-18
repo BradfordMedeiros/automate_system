@@ -54,11 +54,10 @@ const addActionScript = (db,  actionScriptName, topic, script, toTopic ) => {
   saveActionScriptToDb(db, actionScriptName, topic, script, toTopic);
 };
 
-const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject) => {
+const deleteActionScript = (db, actionScriptName) => new Promise((resolve, reject) => {
   db.open().then(database => {
-    database.all(`DELETE FROM state_engine WHERE name = ('${stateScriptName}')`, (err) => {
-      stateScripts[stateScriptName].stop();
-      delete stateScripts[stateScriptName];
+    database.all(`DELETE FROM action_engine WHERE name = ('${actionScriptName}')`, (err) => {
+      delete actionScripts[actionScriptName];
       if (err){
         reject(err);
       }else{
@@ -90,8 +89,7 @@ const onMqttTopic = (topic, message) => {
 };
 
 module.exports = {
-  //addStateScript,
-  //deleteStateScript,
+  deleteActionScript,
   getActionScripts,
   loadActionScripts,
   addActionScript,
