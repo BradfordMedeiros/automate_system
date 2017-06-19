@@ -10,6 +10,7 @@ const automate_sys = require('./src/index');
 
 automate_sys.init({
   resourceFile: './test.db',
+  verbose: true,
   mqtt: {
     mqttPort: 1883,
     httpPort: 4000,

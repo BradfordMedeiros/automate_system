@@ -19,7 +19,7 @@ const init = ({
       httpBridge,
       verbose,
     }).then(system => {
-      resolve(mapSystemToApiLayer(system, false));
+      resolve(mapSystemToApiLayer(system, true));
     }).catch(reject);
   });
 };

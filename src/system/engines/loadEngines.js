@@ -2,6 +2,7 @@ const stateScriptEngine = require('./stateScripts/stateEngine');
 const actionScriptEngine = require('./actionScripts/actionEngine');
 const sequenceEngine = require('./sequence/sequenceEngine');
 const ruleEngine = require('./rules/ruleEngine');
+const schedulerEngine = require('./scheduler/schedulerEngine');
 
 const loadEngines = (db, getActions, getConditions) => {
   const loadStateScriptEngine = stateScriptEngine.loadStateScripts(db);
@@ -34,6 +35,9 @@ const loadEngines = (db, getActions, getConditions) => {
           addRule: (ruleName, conditionName, strategy, rate, topic, value) => ruleEngine.addRule(db, ruleName, conditionName, strategy, rate, topic, value),
           deleteRule: (ruleName) => ruleEngine.deleteRule(db, ruleName),
           getRules: ruleEngine.getRules,
+        },
+        schedulerEngine: {
+          addSchedule: (scheduleName, topic, schedule) => schedulerEngine.addSchedule(db, scheduleName, topic, schedule),
         }
       };
       resolve(engines);

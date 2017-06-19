@@ -7,6 +7,7 @@ const createStateScriptEngineSchema = require('../system/engines/stateScripts/cr
 const createActionScriptEngineSchema = require('../system/engines/actionScripts/createSchema');
 const createSequenceEngineSchema = require('../system/engines/sequence/createSchema');
 const createRuleEngineSchema = require('../system/engines/rules/createSchema');
+const createSchedulerEngineSchema = require('../system/engines/scheduler/createSchema');
 
 const createEventSchema = require('../system/logging/events/createSchema');
 const createHistorySchema = require('../system/logging/history/createSchema');
@@ -26,6 +27,7 @@ const migrate = db => {
       .hold(() => createActionScriptEngineSchema(db))
       .hold(() => createSequenceEngineSchema(db))
       .hold(() => createRuleEngineSchema(db))
+      .hold(() => createSchedulerEngineSchema(db))
       .hold(() => createHistorySchema(db))
       .run()
       .then(resolve)
