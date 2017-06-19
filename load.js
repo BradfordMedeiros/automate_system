@@ -10,9 +10,8 @@ const automate_sys = require('./src/index');
 
 automate_sys.init({
   resourceFile: './test.db',
-
   mqtt: {
-    mqttPort: 1882,
+    mqttPort: 1883,
     httpPort: 4000,
   },
   httpBridge: {
@@ -21,4 +20,11 @@ automate_sys.init({
   },
 }).then(system => sys = system);
 
+
+/*
+
+  Next to do:  scheduler?
+  then: test shit out of it, extra error handling, etc
+  then get automate_core back up to date
+ */
 

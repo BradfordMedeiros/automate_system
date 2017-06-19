@@ -8,7 +8,7 @@
     "start": "node index.js",
     "start-dev": "NODE_ENV=development nodemon index.js --watch src --exec",
     "build": "yarn install && result=${PWD##*/} && cd .. && tar -czvf automate_core.tar.gz $result && mv automate_core.tar.gz ./$result",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive tests/"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,6 @@
     "when_do": "^1.0.8"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "mocha": "^3.4.2"
   }
 }

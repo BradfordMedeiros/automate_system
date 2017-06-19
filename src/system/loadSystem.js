@@ -1,7 +1,7 @@
-const loadBaseSystem = require('./system/base/loadBaseSystem');
-const loadEngines = require('./system/engines/loadEngines');
-const loadLogging = require('./system/logging/loadLogging');
-const loadBridges = require('./system/bridges/loadBridges');
+const loadBaseSystem = require('./base/loadBaseSystem');
+const loadEngines = require('./engines/loadEngines');
+const loadLogging = require('./logging/loadLogging');
+const loadBridges = require('./bridges/loadBridges');
 
 const loadSystem = db => {
   const bridges = loadBridges();
