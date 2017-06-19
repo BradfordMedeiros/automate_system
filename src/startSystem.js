@@ -17,36 +17,46 @@ const handleError = err => {
   }
 }
 
-const migrateSystem = resourceFile => {
+const migrateSystem = (resourceFile, verbose) => {
   return new Promise((resolve, reject) => {
     if (!migrate.isMigrated(resourceFile)){
-      console.log('Migration: Not yet migrated');
+      if (verbose){
+        console.log('Migration: Not yet migrated');
+      }
       migrate.createDb(resourceFile).then(() => {
-        console.log("Migration: Successful");
+        if (verbose){
+          console.log("Migration: Successful");
+        }
         resolve();
       }).catch(err => {
-        console.log("Migration: Failure");
+        if (verbose){
+          console.log("Migration: Failure");
+        }
         reject(err);
       });
     }else{
-      console.log('Migration: Already migrated');
+      if (verbose){
+        console.log('Migration: Success - Already migrated');
+      }
       resolve();
     }
   });
 };
 
-const printStartMessage = ({ resourceFile, mqtt, httpBridge }) => {
-  console.log('Starting automate core')
-  console.log('Resource: ', resourceFile);
-  console.log('Mqtt Port: ', mqtt.mqttPort);
-  console.log('Mqtt http Port: ', mqtt.httpPort);
-  console.log('Http bridge enabled: ', httpBridge.enabled);
-  console.log('http bridge port: ', httpBridge.port);
+const printStartMessage = ({ resourceFile, mqtt, httpBridge, verbose }) => {
+  if (verbose){
+    console.log('Starting automate core')
+    console.log('Resource: ', resourceFile);
+    console.log('Mqtt Port: ', mqtt.mqttPort);
+    console.log('Mqtt http Port: ', mqtt.httpPort);
+    console.log('Http bridge enabled: ', httpBridge.enabled);
+    console.log('http bridge port: ', httpBridge.port);
+  }
 };
 
-const start = ({ resourceFile, mqtt, httpBridge}) => {
+const start = ({ resourceFile, mqtt, httpBridge, verbose }) => {
   return new Promise((resolver, rejector) => {
-    printStartMessage({resourceFile, mqtt, httpBridge });
+    printStartMessage({resourceFile, mqtt, httpBridge, verbose });
     migrateSystem(resourceFile).then(() => {
       loadSystem(getDatabase(resourceFile)).then(system => {
         const theSystem = system;

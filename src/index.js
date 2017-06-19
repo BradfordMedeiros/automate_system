@@ -6,6 +6,7 @@ const init = ({
   resourceFile,
   mqtt,
   httpBridge,
+  verbose,
 }) => {
   if (typeof(resourceFile) !== typeof('')){
     throw (new Error("Resource file string must be defined"));
@@ -16,6 +17,7 @@ const init = ({
       resourceFile,
       mqtt,
       httpBridge,
+      verbose,
     }).then(system => {
       resolve(mapSystemToApiLayer(system, false));
     }).catch(reject);
