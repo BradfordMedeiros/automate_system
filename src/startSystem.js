@@ -43,6 +43,7 @@ const migrateSystem = (resourceFile, verbose) => {
   });
 };
 
+
 const printStartMessage = ({ resourceFile, mqtt, httpBridge, verbose }) => {
   if (verbose){
     console.log('Starting automate core')
@@ -94,6 +95,7 @@ const start = ({ resourceFile, mqtt, httpBridge, verbose }) => {
           }, {
             mqttPort: mqtt.mqttPort,
           }).then(mqttClient => {
+            theSystem.engines.schedulerEngine.startAll(mqttClient);
             if (httpBridge.enabled === true){
               theSystem.bridges.httpBridge.start(
                 mqttClient.publish.bind(mqttClient),

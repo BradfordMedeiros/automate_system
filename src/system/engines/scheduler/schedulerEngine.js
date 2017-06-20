@@ -81,6 +81,7 @@ const addSchedule = (db,  scheduleName, schedule, topic, value) => {
 const deleteSchedule = (db, scheduleName) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all(`DELETE FROM scheduler_engine WHERE name = ('${scheduleName}')`, (err) => {
+      schedules[scheduleName].stop();
       delete schedules[scheduleName];
       if (err){
         reject(err);
@@ -100,9 +101,23 @@ const loadSchedules = (db) => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
+const startAll = mqttClient => {
+  Object.keys(schedules).forEach(schedule => {
+    schedules[schedule].start(mqttClient.publish.bind(mqttClient));
+  });
+};
+
+const stopAll = () => {
+  Object.keys(schedules).forEach(schedule => {
+    schedules[schedule].stop();
+  });
+};
+
 const getSchedules = () => schedules;
 
 module.exports = {
+  startAll,
+  stopAll,
   addSchedule,
   deleteSchedule,
   getSchedules,

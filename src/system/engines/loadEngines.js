@@ -42,6 +42,8 @@ const loadEngines = (db, getActions, getConditions) => {
           deleteSchedule: (scheduleName) => schedulerEngine.deleteSchedule(db, scheduleName),
           getSchedules: schedulerEngine.getSchedules,
           isValidSchedule: schedulerEngine.isValidSchedule,
+          startAll: schedulerEngine.startAll,
+          stopAll: schedulerEngine.stopAll,
         }
       };
       resolve(engines);
