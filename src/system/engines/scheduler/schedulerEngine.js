@@ -1,4 +1,14 @@
-const scheduler = require('node-schedule');
+const CronJob = require('cron').CronJob;
+
+const isValidSchedule = schedule => {
+  let isValid = true;
+  try {
+    new CronJob(schedule, () => { });
+  } catch(ex) {
+    isValid = false;
+  }
+  return isValid;
+};
 
 let schedules = { };
 
@@ -14,7 +24,7 @@ const getSchedulesFromDb = db => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const saveScheduleToDb = (db, name, topic, schedule, value) => new Promise((resolve, reject) => {
+const saveScheduleToDb = (db, name,  schedule, topic, value) => new Promise((resolve, reject) => {
   db.open().then(database => {
     const query = `
     INSERT OR REPLACE 
@@ -35,27 +45,33 @@ const saveScheduleToDb = (db, name, topic, schedule, value) => new Promise((reso
 
 
 const addSchedule = (db,  scheduleName, schedule, topic, value) => {
-  let handle;
+  if (!isValidSchedule(schedule)){
+    throw (new Error('Invalid pattern for schedule '+ scheduleName+ ' got pattern: '+ schedule));
+  }
+
+  let job;
   schedules[scheduleName] = {
     name: scheduleName,
     topic,
     value,
+    schedule,
     start: publish => {
       if (publish === undefined){
         throw (new Error('publish must be massed into start'));
       }
 
-      if (handle){
+      if (job){
         throw (new Error('Schedule: '+scheduleName+ ' already started'));
       }else{
-        handle = scheduler.scheduleJob(schedule, () => {
-          publish(topic, value)
-        })
+        job = new CronJob(schedule, () => {
+          publish(topic, value);
+        });
+        job.start();
       }
     },
     stop: () => {
-      if (handle){
-        handle.cancel();
+      if (job){
+        job.stop();
       }
     }
   };
@@ -78,7 +94,7 @@ const deleteSchedule = (db, scheduleName) => new Promise((resolve, reject) => {
 const loadSchedules = (db) => new Promise((resolve, reject) => {
   getSchedulesFromDb(db).then(loadedSchedules => {
     loadedSchedules.forEach(schedule => {
-      addSchedule(db,  schedule.schedule, schedule.name, schedule.topic);
+      addSchedule(db, schedule.name, schedule.schedule, schedule.topic, schedule.value);
     });
     resolve();
   }).catch(reject);
@@ -91,4 +107,5 @@ module.exports = {
   deleteSchedule,
   getSchedules,
   loadSchedules,
+  isValidSchedule,
 };

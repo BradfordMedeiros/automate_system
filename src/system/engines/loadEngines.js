@@ -41,6 +41,7 @@ const loadEngines = (db, getActions, getConditions) => {
           addSchedule: (scheduleName, schedule, topic, value) => schedulerEngine.addSchedule(db, scheduleName, schedule, topic, value),
           deleteSchedule: (scheduleName) => schedulerEngine.deleteSchedule(db, scheduleName),
           getSchedules: schedulerEngine.getSchedules,
+          isValidSchedule: schedulerEngine.isValidSchedule,
         }
       };
       resolve(engines);
