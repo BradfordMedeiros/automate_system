@@ -4,8 +4,9 @@ const createSchema = db => new Promise((resolve, reject) => {
     database.all(
       `CREATE TABLE scheduler_engine (
         name TEXT UNIQUE NOT NULL,
-        topic TEXT NOT NULL,
         schedule TEXT NOT NULL,
+        topic TEXT NOT NULL,
+        value TEXT NOT NULL,
         PRIMARY KEY(name)
       );`, (err) => {
         //database.close();

@@ -9,8 +9,9 @@ const loadEngines = (db, getActions, getConditions) => {
   const loadActionEngine = actionScriptEngine.loadActionScripts(db);
   const loadSequenceEngine = sequenceEngine.loadSequences(db, getActions);
   const loadRuleEngine = ruleEngine.loadRules(db, getConditions);
+  const loadScheduleEngine = schedulerEngine.loadSchedules(db);
 
-  const enginesLoaded = Promise.all([loadStateScriptEngine, loadActionEngine, loadSequenceEngine, loadRuleEngine]);
+  const enginesLoaded = Promise.all([loadStateScriptEngine, loadActionEngine, loadSequenceEngine, loadRuleEngine, loadScheduleEngine]);
 
   return new Promise((resolve, reject) => {
     enginesLoaded.then(() => {
@@ -37,7 +38,9 @@ const loadEngines = (db, getActions, getConditions) => {
           getRules: ruleEngine.getRules,
         },
         schedulerEngine: {
-          addSchedule: (scheduleName, topic, schedule) => schedulerEngine.addSchedule(db, scheduleName, topic, schedule),
+          addSchedule: (scheduleName, schedule, topic, value) => schedulerEngine.addSchedule(db, scheduleName, schedule, topic, value),
+          deleteSchedule: (scheduleName) => schedulerEngine.deleteSchedule(db, scheduleName),
+          getSchedules: schedulerEngine.getSchedules,
         }
       };
       resolve(engines);
