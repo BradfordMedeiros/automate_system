@@ -17,7 +17,6 @@ const startBridge = (publishMqtt, getMqttValue, { httpBridgePort = 1656} = {}) =
     app.get('*', (req,res) => {
       const mqttTopic = req.url;
       const mqttData = getMqttValue(mqttTopic);
-      publishMqtt(mqttTopic, mqttData);
       res.send(mqttData);
     });
 

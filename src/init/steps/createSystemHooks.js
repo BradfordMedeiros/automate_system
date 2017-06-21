@@ -1,3 +1,6 @@
+const handleError = err => {
+  console.log(err);
+};
 
 const createSystemHooks = theSystem => ({
   onState: (topic, messsage) => {
