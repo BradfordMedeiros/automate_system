@@ -112,5 +112,4 @@ module.exports = {
   deleteSchedule,
   getSchedules,
   loadSchedules,
-  isValidSchedule,
 };

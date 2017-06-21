@@ -41,9 +41,6 @@ const loadEngines = (db, getActions, getConditions, getMqttClient) => {
           addSchedule: (scheduleName, schedule, topic, value) => schedulerEngine.addSchedule(db, scheduleName, schedule, topic, value),
           deleteSchedule: (scheduleName) => schedulerEngine.deleteSchedule(db, scheduleName),
           getSchedules: schedulerEngine.getSchedules,
-          isValidSchedule: schedulerEngine.isValidSchedule,
-          startAll: schedulerEngine.startAll,
-          stopAll: schedulerEngine.stopAll,
         }
       };
       resolve(engines);
