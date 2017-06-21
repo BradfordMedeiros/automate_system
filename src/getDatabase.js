@@ -2,23 +2,6 @@
 const sqlite3 = require('sqlite3');
 const process = require('process');
 
-const turnOnForeignKeys = db => {
-  return new Promise((resolve, reject) => {
-    db.open().catch(reject).then(database => {
-      database.run(
-        `PRAGMA foreign_keys = ON;`
-        , (err) => {
-          //database.close();
-          if (err){
-            reject(err);
-          }else{
-            resolve();
-          }
-        });
-    });
-  })
-};
-
 let connection;
 process.on('exit', () => {
   if (connection){

@@ -22,6 +22,11 @@ const mapSystemToApiLayer = (system, raw) => {
         },
         sequenceEngine: system.engines.sequenceEngine,
         ruleEngine: system.engines.ruleEngine,
+        schedulerEngine: {
+          addSchedule: system.engines.schedulerEngine.addSchedule,
+          deleteSchedule: system.engines.schedulerEngine.deleteSchedule,
+          getSchedules: system.engines.schedulerEngine.getSchedules,
+        },
       },
       logging: {
         history: {

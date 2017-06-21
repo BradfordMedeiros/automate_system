@@ -1,5 +1,5 @@
 
-const start = require('./startSystem');
+const start = require('./init/startSystem');
 const mapSystemToApiLayer = require('./mapSystemToApiLayer');
 
 const init = ({
