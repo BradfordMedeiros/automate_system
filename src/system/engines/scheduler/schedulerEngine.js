@@ -77,6 +77,7 @@ const addSchedule = (db,  scheduleName, schedule, topic, value) => {
       }
     }
   };
+  schedules[scheduleName].start();
   saveScheduleToDb(db, scheduleName, schedule, topic, value);
 };
 

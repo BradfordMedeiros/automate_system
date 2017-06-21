@@ -52,11 +52,13 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
     run: () => {
       handle = setInterval(() => {
         const value = evalFunction();
-        mqttClientGetter().publish(topic, value.toString());
+        console.log('value is : ', value);
+        mqttClientGetter().publish(topic, value === undefined ? '' : value.toString());
       }, 1000);
     },
     stop: () => clearInterval(handle),
   };
+  stateScripts[stateScriptName].run();
   saveStateScriptToDb(db, stateScriptName, topic, eval);
 };
 
@@ -79,7 +81,7 @@ const loadStateScripts = (db, getMqttClient) => new Promise((resolve, reject) =>
   mqttClientGetter = getMqttClient;
   getStateScriptsFromDb(db).then(loadedStateScripts => {
     loadedStateScripts.forEach(stateScriptData => {
-      addStateScript(db,stateScriptData.name, stateScriptData.eval);
+      addStateScript(db, stateScriptData.name, stateScriptData.topic, stateScriptData.eval);
     });
     resolve();
   }).catch(reject);

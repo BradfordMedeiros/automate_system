@@ -6,9 +6,9 @@ const loadSystem = require('../system/loadSystem');
 const getDatabase = require('../getDatabase');
 const startMqttBroker = require('../environment/startMqttBroker');
 const mqttSystem = require('./steps/mqttSystem');
-const createSystemHooks = require('./steps/createSystemHooks');
 const startHttpBridge = require('./steps/startHttpBridge');
-const handleMqttMessage =  require('./steps/handleMqttMessage');
+const createSystemHooks = require('./hooks/createSystemHooks');
+const handleMqttMessage =  require('./hooks/handleMqttMessage');
 
 process.on("unhandledRejection", function (err) {
   console.error("unhandledRejection: " + err.stack); // or whatever.
