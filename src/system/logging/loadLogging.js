@@ -10,7 +10,7 @@ const loadLogging = db => {
       },
       history: {
         onHistoryData: (topic, value) => history.onHistoryData(db, topic, value),
-        getHistory: () => history.getHistory(db),
+        getHistory: options => history.getHistory(db, options),
         getMqttValue: history.getMqttValue,
       },
     };

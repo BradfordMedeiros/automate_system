@@ -14,10 +14,26 @@ const getMqttValue = topic => {
   }
  */
 
-const getHistory = db => {
+const getHistory = (db, options = { }) => {
+  const limit = options.limit;
+  const topic = options.topic;
+
+  let query = `SELECT * FROM history`;
+
+  if (topic !== undefined){
+    query = `${query} where topic='${topic}'`
+  }
+  if (limit !== undefined){
+    if (limit < 1){
+      throw (new Error('Limit must be at least 1'));
+    }
+    query = `${query} limit ${limit}`
+  }
+
+
   return new Promise((resolve, reject) => {
     db.open().then(database => {
-      database.all(`SELECT * FROM history`, (err, values) => {
+      database.all(query, (err, values) => {
         if (err) {
           reject(err);
         } else {
