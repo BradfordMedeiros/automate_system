@@ -6,6 +6,14 @@ const getMqttValue = topic => {
 };
 
 
+/*
+  @todo options:
+  {
+    topic: <topic to query>, // no topic doesn't query
+    limit: <number of items to query>,
+  }
+ */
+
 const getHistory = db => {
   return new Promise((resolve, reject) => {
     db.open().then(database => {
@@ -33,7 +41,6 @@ const saveHistoryToDb = (db, topic, value) => new Promise((resolve, reject) => {
 });
 
 const onHistoryData = (db, topic, value) => new Promise((resolve, reject) => {
-  console.log('on history data: ');
   mqttDataCache[topic] = value;
   return saveHistoryToDb(db, topic, value).then(resolve).catch(reject);
 });

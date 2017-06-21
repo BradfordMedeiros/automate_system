@@ -52,7 +52,6 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
     run: () => {
       handle = setInterval(() => {
         const value = evalFunction();
-        console.log('value is : ', value);
         mqttClientGetter().publish(topic, value === undefined ? '' : value.toString());
       }, 1000);
     },
@@ -65,7 +64,6 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
 const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all(`DELETE FROM state_engine WHERE name = ('${stateScriptName}')`, (err) => {
-      //database.close();
       stateScripts[stateScriptName].stop();
       delete stateScripts[stateScriptName];
       if (err){

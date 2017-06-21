@@ -50,7 +50,6 @@ const unregisterState = (db, topic) => new Promise((resolve, reject) => {
 });
 
 const onStateData = (db, topic, value) => new Promise((resolve, reject) => {
-  console.log('add state data');
   addStateData(topic, value);
   saveStateToDb(db, topic, value).then(resolve).catch(reject);
 });

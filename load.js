@@ -12,6 +12,7 @@ automate_sys.init({
   resourceFile: './test.db',
   verbose: true,
   mqtt: {
+    // need to add: mqttIp
     mqttPort: 1883,
     httpPort: 4000,
   },
