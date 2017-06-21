@@ -4,12 +4,12 @@ const sequenceEngine = require('./sequence/sequenceEngine');
 const ruleEngine = require('./rules/ruleEngine');
 const schedulerEngine = require('./scheduler/schedulerEngine');
 
-const loadEngines = (db, getActions, getConditions) => {
+const loadEngines = (db, getActions, getConditions, getMqttClient) => {
   const loadStateScriptEngine = stateScriptEngine.loadStateScripts(db);
   const loadActionEngine = actionScriptEngine.loadActionScripts(db);
   const loadSequenceEngine = sequenceEngine.loadSequences(db, getActions);
   const loadRuleEngine = ruleEngine.loadRules(db, getConditions);
-  const loadScheduleEngine = schedulerEngine.loadSchedules(db);
+  const loadScheduleEngine = schedulerEngine.loadSchedules(db, getMqttClient);
 
   const enginesLoaded = Promise.all([loadStateScriptEngine, loadActionEngine, loadSequenceEngine, loadRuleEngine, loadScheduleEngine]);
 

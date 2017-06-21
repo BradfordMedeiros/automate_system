@@ -3,7 +3,7 @@ const loadEngines = require('./engines/loadEngines');
 const loadLogging = require('./logging/loadLogging');
 const loadBridges = require('./bridges/loadBridges');
 
-const loadSystem = db => {
+const loadSystem = (db, getMqttClient) => {
   const bridges = loadBridges();
   const loadBaseSystemPromise = loadBaseSystem(db);
   const loadLoggingPromise = loadLogging(db);
@@ -21,7 +21,8 @@ const loadSystem = db => {
         loadEngines(
           db,
           system.baseSystem.actions.getActions,
-          system.baseSystem.conditions.getConditions
+          system.baseSystem.conditions.getConditions,
+          getMqttClient
         ).then(engines => {
           system.engines = engines;
           resolve(system);

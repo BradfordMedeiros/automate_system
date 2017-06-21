@@ -1,5 +1,11 @@
 const CronJob = require('cron').CronJob;
 
+let mqttClientGetter = () => {
+  throw (new Error("Get states never set: Were conditions loaded?"));
+};
+
+let getMqttClient = () => mqttClientGetter();
+
 const isValidSchedule = schedule => {
   let isValid = true;
   try {
@@ -55,16 +61,12 @@ const addSchedule = (db,  scheduleName, schedule, topic, value) => {
     topic,
     value,
     schedule,
-    start: publish => {
-      if (publish === undefined){
-        throw (new Error('publish must be massed into start'));
-      }
-
+    start: () => {
       if (job){
         throw (new Error('Schedule: '+scheduleName+ ' already started'));
       }else{
         job = new CronJob(schedule, () => {
-          publish(topic, value);
+          mqttClientGetter().publish(topic, value);
         });
         job.start();
       }
@@ -92,7 +94,9 @@ const deleteSchedule = (db, scheduleName) => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const loadSchedules = (db) => new Promise((resolve, reject) => {
+const loadSchedules = (db, getMqttClient) => new Promise((resolve, reject) => {
+  mqttClientGetter =  getMqttClient;
+
   getSchedulesFromDb(db).then(loadedSchedules => {
     loadedSchedules.forEach(schedule => {
       addSchedule(db, schedule.name, schedule.schedule, schedule.topic, schedule.value);
@@ -101,23 +105,9 @@ const loadSchedules = (db) => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const startAll = mqttClient => {
-  Object.keys(schedules).forEach(schedule => {
-    schedules[schedule].start(mqttClient.publish.bind(mqttClient));
-  });
-};
-
-const stopAll = () => {
-  Object.keys(schedules).forEach(schedule => {
-    schedules[schedule].stop();
-  });
-};
-
 const getSchedules = () => schedules;
 
 module.exports = {
-  startAll,
-  stopAll,
   addSchedule,
   deleteSchedule,
   getSchedules,
