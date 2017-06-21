@@ -1,7 +1,7 @@
 const CronJob = require('cron').CronJob;
 
 let mqttClientGetter = () => {
-  throw (new Error("Get states never set: Were conditions loaded?"));
+  throw (new Error("getMqttClient never set: Was schedule engine loaded?"));
 };
 
 let getMqttClient = () => mqttClientGetter();

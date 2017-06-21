@@ -1,6 +1,12 @@
 
 let stateScripts = { };
 
+let mqttClientGetter = () => {
+  throw (new Error("getMqttClient never set: Was state engine loaded?"));
+};
+
+let getMqttClient = () => mqttClientGetter();
+
 const getStateScriptsFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all('SELECT * FROM state_engine', (err, actions) => {
@@ -43,13 +49,10 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
     name: stateScriptName,
     topic,
     eval: evalFunction,
-    run: publish => {
-      if (typeof(publish) !== 'function'){
-        throw (new Error('Publish must be function'));
-      }
+    run: () => {
       handle = setInterval(() => {
         const value = evalFunction();
-        publish(topic, value.toString());
+        mqttClientGetter().publish(topic, value.toString());
       }, 1000);
     },
     stop: () => clearInterval(handle),
@@ -72,7 +75,8 @@ const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject)
   }).catch(reject);
 });
 
-const loadStateScripts = (db) => new Promise((resolve, reject) => {
+const loadStateScripts = (db, getMqttClient) => new Promise((resolve, reject) => {
+  mqttClientGetter = getMqttClient;
   getStateScriptsFromDb(db).then(loadedStateScripts => {
     loadedStateScripts.forEach(stateScriptData => {
       addStateScript(db,stateScriptData.name, stateScriptData.eval);
