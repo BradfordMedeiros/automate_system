@@ -14,21 +14,34 @@ process.on("unhandledRejection", function (err) {
   console.error("unhandledRejection: " + err.stack); // or whatever.
 });
 
+const injectStop = (system, setup) => {
+  system.off = () => {
+    setup.httpServer.close();
+    setup.server.close();
+    setup.mqttClient.end();
+  };
+  return system;
+};
+
+const setup = { };
 const initializeSystem = (resourceFile, mqtt,  httpBridge) => new Promise((resolve, reject) => {
-  startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort}).then(() => {
+  startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort}).then(server => {
+    setup.server = server;
     console.log('mqtt broker started');
     mqttSystem({mqttPort: mqtt.mqttPort}).then(mqttClient => {
+      setup.mqttClient = mqttClient;
       console.log('mqtt started');
       loadSystem(getDatabase(resourceFile), () => mqttClient).then(theSystem => {
         console.log('system loaded');
         mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem)));
         if (httpBridge.enabled === true) {
-          startHttpBridge(theSystem, mqttClient, httpBridge.port).then(() => {
+          startHttpBridge(theSystem, mqttClient, httpBridge.port).then(httpServer => {
             console.log('http bridge started');
-            resolve(theSystem);
+            setup.httpServer = httpServer;
+            resolve(injectStop(theSystem, setup));
           }).catch(reject);
         } else {
-          resolve(theSystem)
+          resolve(inject(theSystem, setup))
         }
       }).catch(reject);
     }).catch(reject);

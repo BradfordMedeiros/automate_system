@@ -31,7 +31,7 @@ const startBridge = (publishMqtt, getMqttValue, { httpBridgePort = 1656} = {}) =
       if (err){
         reject(err);
       }else{
-        resolve();
+        resolve(server);
       }
     });
   });

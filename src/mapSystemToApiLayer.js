@@ -36,6 +36,7 @@ const mapSystemToApiLayer = (system, raw) => {
           getEvents: system.logging.events.getEvents,
         }
       },
+      off: system.off,
     };
     return systemApi;
   }

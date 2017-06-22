@@ -13,7 +13,7 @@ const startMqttBroker = ({ mqttPort = 1883, httpPort = 4000 } = { }) => {
     const server = new mosca.Server(moscaSetting);
 
     server.on('ready', () => {
-      resolve();
+      resolve(server);
     });
 
     server.on("error", function (err) {
