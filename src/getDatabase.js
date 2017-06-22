@@ -17,7 +17,13 @@ const getDatabase = databaseName => ({
         }
       })
     }
-  })
+  }),
+  close: () => {
+    if (connection){
+      connection.close();
+      connection = undefined;
+    }
+  },
 });
 
 

@@ -19,7 +19,7 @@ const injectStop = (system, setup) => {
     setup.httpServer.close();
     setup.server.close();
     setup.mqttClient.end();
-    setup.databasePromise.open().then(db => db.close());
+    setup.databasePromise.close();
   };
   return system;
 };
