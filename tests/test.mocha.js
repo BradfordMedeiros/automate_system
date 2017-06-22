@@ -18,17 +18,32 @@ const options = {
 };
 
 describe('automate_system start', () => {
-  it('creates a resource file in path specified', () => {
+  let automate;
+  beforeEach(() => {
     return new Promise((resolve, reject) => {
-      automate_system.init(options).then(() => {
+      automate_system.init(options).then(system => {
         const resourceExists = fs.existsSync(resourceFilePath);
         if (resourceExists){
+          automate = system;
           resolve();
         }else{
           reject(resourceFilePath + ' does not exist');
         }
       }).catch(reject);
-    });
+    })
+  });
+  afterEach(() => {
+   automate.stop();
+  });
+  it('creates a resource file in path specified', () => {
+      const resourceFileExists = fs.existsSync(resourceFilePath);
+      if (!resourceFileExists){
+        throw (new Error('Resource file does not exist '+resourceFilePath));
+      }
+  });
+  it ('', () => {
+
+
   });
 
 });
