@@ -38,9 +38,9 @@ const mapSystemToApiLayer = (system, raw) => {
       },
     };
 
-    systemApi.off = () => {
-      system.off();
-      delete systemApi.off;
+    systemApi.stop = () => {
+      system.stop();
+      delete systemApi.stop;
       delete systemApi.baseSystem;
       delete systemApi.engines;
       delete systemApi.logging;

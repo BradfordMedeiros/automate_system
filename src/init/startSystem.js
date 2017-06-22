@@ -15,7 +15,7 @@ process.on("unhandledRejection", function (err) {
 });
 
 const injectStop = (system, setup) => {
-  system.off = () => {
+  system.stop = () => {
     setup.httpServer.close();
     setup.server.close();
     setup.mqttClient.end();
@@ -28,18 +28,14 @@ const setup = { };
 const initializeSystem = (resourceFile, mqtt,  httpBridge) => new Promise((resolve, reject) => {
   startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort}).then(server => {
     setup.server = server;
-    console.log('mqtt broker started');
     mqttSystem({mqttPort: mqtt.mqttPort}).then(mqttClient => {
       setup.mqttClient = mqttClient;
-      console.log('mqtt started');
       const databasePromise = getDatabase(resourceFile);
       loadSystem(databasePromise, () => mqttClient).then(theSystem => {
-        console.log('system loaded');
         setup.databasePromise = databasePromise;
         mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem)));
         if (httpBridge.enabled === true) {
           startHttpBridge(theSystem, mqttClient, httpBridge.port).then(httpServer => {
-            console.log('http bridge started');
             setup.httpServer = httpServer;
             resolve(injectStop(theSystem, setup));
           }).catch(reject);
@@ -55,7 +51,6 @@ const start = ({ resourceFile, mqtt, httpBridge, verbose }) => new Promise((reso
   printStartMessage({resourceFile, mqtt, httpBridge, verbose});
   migrateSystem(resourceFile).then(
     () => {
-      console.log('finished migration-------------');
       initializeSystem(resourceFile, mqtt, httpBridge).then(sys => resolve(sys)).catch(reject);
     }
   ).catch(reject);
