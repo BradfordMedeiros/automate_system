@@ -5,31 +5,37 @@ const getMqttValue = topic => {
   return mqttDataCache[topic];
 };
 
-
-/*
-  @todo options:
-  {
-    topic: <topic to query>, // no topic doesn't query
-    limit: <number of items to query>,
+const validateGetHistoryParameters = options => {
+  console.log('options is type: ', typeof(options));
+  if (options !== undefined){
+    if (options.topic && typeof(options.topic) !== typeof('')){
+      throw (new Error('logging:history:getHistory topic is not defined as string'));
+    }
+    if (options.limit && typeof(options.limit) !== typeof(1)){
+      throw (new Error('logging:history:getHistory limit is not defined as number'));
+      if (limit < 1){
+        throw (new Error('logging:history:getHistory limit must be at least 1'));
+      }
+    }
   }
- */
+};
 
-const getHistory = (db, options = { }) => {
-  const limit = options.limit;
-  const topic = options.topic;
+const getHistory = (db, options) => {
+  validateGetHistoryParameters(options);
 
   let query = `SELECT * FROM history`;
 
-  if (topic !== undefined){
-    query = `${query} where topic='${topic}'`
-  }
-  if (limit !== undefined){
-    if (limit < 1){
-      throw (new Error('Limit must be at least 1'));
-    }
-    query = `${query} limit ${limit}`
-  }
+  if (options){
+    const limit = options.limit;
+    const topic = options.topic;
 
+    if (topic !== undefined){
+      query = `${query} where topic='${topic}'`
+    }
+    if (limit !== undefined){
+      query = `${query} limit ${limit}`
+    }
+  }
 
   return new Promise((resolve, reject) => {
     db.open().then(database => {
