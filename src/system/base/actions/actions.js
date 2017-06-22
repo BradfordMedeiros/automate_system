@@ -17,7 +17,6 @@ const getActionsFromDb = db => new Promise((resolve, reject) => {
 const saveActionToDb = (db, topic, value) => new Promise((resolve, reject) => {
   db.open().then(database => {
     const query = `INSERT OR REPLACE INTO actions (topic, value) values ('${topic}', '${value}')`;
-    console.log(query);
     database.all(query, (err) => {
       //database.close();
       if (err){

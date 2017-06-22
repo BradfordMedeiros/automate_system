@@ -3,7 +3,6 @@ let states = { };
 const getStatesFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all('SELECT * FROM states', (err, states) => {
-      //database.close();
       if (err){
         reject(err);
       }else{
