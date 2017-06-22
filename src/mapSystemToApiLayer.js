@@ -36,7 +36,14 @@ const mapSystemToApiLayer = (system, raw) => {
           getEvents: system.logging.events.getEvents,
         }
       },
-      off: system.off,
+    };
+
+    systemApi.off = () => {
+      system.off();
+      delete systemApi.off;
+      delete systemApi.baseSystem;
+      delete systemApi.engines;
+      delete systemApi.logging;
     };
     return systemApi;
   }

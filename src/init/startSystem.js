@@ -19,6 +19,7 @@ const injectStop = (system, setup) => {
     setup.httpServer.close();
     setup.server.close();
     setup.mqttClient.end();
+    setup.databasePromise.open().then(db => db.close());
   };
   return system;
 };
@@ -31,8 +32,10 @@ const initializeSystem = (resourceFile, mqtt,  httpBridge) => new Promise((resol
     mqttSystem({mqttPort: mqtt.mqttPort}).then(mqttClient => {
       setup.mqttClient = mqttClient;
       console.log('mqtt started');
-      loadSystem(getDatabase(resourceFile), () => mqttClient).then(theSystem => {
+      const databasePromise = getDatabase(resourceFile);
+      loadSystem(databasePromise, () => mqttClient).then(theSystem => {
         console.log('system loaded');
+        setup.databasePromise = databasePromise;
         mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem)));
         if (httpBridge.enabled === true) {
           startHttpBridge(theSystem, mqttClient, httpBridge.port).then(httpServer => {
