@@ -6,7 +6,6 @@ const getMqttValue = topic => {
 };
 
 const validateGetHistoryParameters = options => {
-  console.log('options is type: ', typeof(options));
   if (options !== undefined){
     if (options.topic && typeof(options.topic) !== typeof('')){
       throw (new Error('logging:history:getHistory topic is not defined as string'));

@@ -17,7 +17,7 @@ const options = {
   },
 };
 
-describe('states', () => {
+describe('history', () => {
   let automate;
   let client;
 
@@ -47,19 +47,22 @@ describe('states', () => {
     client.end();
   });
 
-  it ('states are saved', () => (
+  it ('get history gets all topics', () => (
     new Promise((resolve, reject) => {
       client.publish('/actions/humidity/', 'hello');
+      client.publish('/actions/humidity', 'radical');
+      client.publish('/states/thing/go', '23434');
+
       setTimeout(() => {
-        const action = automate.baseSystem.actions.getActions()['/actions/humidity/'];
-        if (action === undefined){
-          reject('/action/humidity/ was not defined');
-        }else{
+        const action = automate.logging.history.getHistory().then(history => {
+          if (history.length !== 3){
+            reject('Expected history.length: got'+history.length);
+          }
           resolve();
-        }
+        }).catch(reject);
       }, 30);
     })
-  ))
+  ));
 });
 
 

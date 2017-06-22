@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const createClient = require('./createClient');
+const createClient = require('./util/createClient');
 const automate_system = require('../src/index');
 
 const resourceFilePath = path.join(__dirname, 'temp/somefile.db');
@@ -17,7 +17,7 @@ const options = {
   },
 };
 
-describe('automate_system start', () => {
+describe('system start information', () => {
   let automate;
   let client;
 
@@ -33,7 +33,7 @@ describe('automate_system start', () => {
         if (resourceExists){
           automate = system;
           clientPromise.then(() => {
-            resolve([automate, client]);
+            resolve();
           }).catch(reject);
         }else{
           reject(resourceFilePath + ' does not exist');
@@ -42,7 +42,8 @@ describe('automate_system start', () => {
     })
   });
   afterEach(() => {
-   automate.stop();
+    fs.unlinkSync(resourceFilePath);
+    automate.stop();
    client.end();
   });
 
@@ -52,32 +53,6 @@ describe('automate_system start', () => {
         throw (new Error('Resource file does not exist '+resourceFilePath));
       }
   });
-  it ('actions are saved', () => (
-     new Promise((resolve, reject) => {
-      client.publish('/actions/humidity/', 'hello');
-      setTimeout(() => {
-        const action = automate.baseSystem.actions.getActions()['/actions/humidity/'];
-        if (action === undefined){
-          reject('/action/humidity/ was not defined');
-        }else{
-          resolve();
-        }
-      }, 30);
-    })
-  ));
-  it ('states are saved', () => (
-    new Promise((resolve, reject) => {
-      client.publish('/actions/humidity/', 'hello');
-      setTimeout(() => {
-        const action = automate.baseSystem.actions.getActions()['/actions/humidity/'];
-        if (action === undefined){
-          reject('/action/humidity/ was not defined');
-        }else{
-          resolve();
-        }
-      }, 30);
-    })
-  ))
 });
 
 
