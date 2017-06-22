@@ -22,6 +22,8 @@ describe('history', () => {
   let client;
 
   beforeEach(() => {
+    fs.unlinkSync(resourceFilePath);
+
     const clientPromise = createClient({ mqttPort: 1882 }, {});
     clientPromise.then(mqttClient => {
       client = mqttClient;
@@ -42,7 +44,6 @@ describe('history', () => {
     })
   });
   afterEach(() => {
-    fs.unlinkSync(resourceFilePath);
     automate.stop();
     client.end();
   });

@@ -42,9 +42,8 @@ describe('system start information', () => {
     })
   });
   afterEach(() => {
-    fs.unlinkSync(resourceFilePath);
     automate.stop();
-   client.end();
+    client.end();
   });
 
   it('creates a resource file in path specified', () => {

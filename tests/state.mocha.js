@@ -42,7 +42,6 @@ describe('states', () => {
     })
   });
   afterEach(() => {
-    fs.unlinkSync(resourceFilePath);
     automate.stop();
     client.end();
   });
