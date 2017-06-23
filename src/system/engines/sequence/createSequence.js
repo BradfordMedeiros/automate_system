@@ -10,6 +10,25 @@ const translatePart = (sequencerSession, part, getActions) => {
   }
 };
 
+/*const r = {
+  rr : [
+    {
+      type: 'broadcast_mqtt',
+      options: {
+        topic: '/actions/door',
+        value: 'open',
+        iterations: 2000,
+        wait: 100,
+      }
+    },
+    {
+      type: 'wait',
+      value: : 2000
+    },
+
+  ]
+};*/
+
 const createRunFromSequenceParts = (sequenceParts, getActions) => {
   let sequencerSession = sequencer();
   sequenceParts.forEach(part => {

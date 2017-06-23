@@ -34,6 +34,14 @@ const saveSequenceToDb = (db,sequenceName, sequenceParts) => new Promise((resolv
 });
 
 const addSequence = (db, sequenceName, sequenceParts) => {
+  if (typeof(sequenceName) !== typeof('')){
+    throw (new Error('engines:sequenceEngine:addSequence sequenceName must be a string'));
+  }
+  if (!Array.isArray(sequenceParts)){
+    throw (new Error('engines:sequenceEngine:addSequence sequenceParts must be an array'));
+  }
+
+
   sequences[sequenceName] = {
     name: sequenceName,
     run: () => createSequence(sequenceParts, getActions).run(),
@@ -42,6 +50,10 @@ const addSequence = (db, sequenceName, sequenceParts) => {
 };
 
 const deleteSequence = (db, sequenceName) => new Promise((resolve, reject) => {
+  if (typeof(sequenceName) !== typeof('')){
+    throw (new Error('engines:sequenceEngine:addSequence seuqenceName must be a string'));
+  }
+
   db.open().then(database => {
     database.run(`DELETE FROM sequence_engine WHERE name = ('${sequenceName}')`, (err) => {
       delete sequences[sequenceName];
