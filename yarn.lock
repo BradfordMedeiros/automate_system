@@ -195,7 +195,7 @@ bl@^0.9.1:
   dependencies:
     readable-stream "~1.0.26"
 
-bl@^1.0.0, bl@^1.2.0:
+bl@^1.0.0, bl@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/bl/-/bl-1.2.1.tgz#cac328f7bee45730d404b692203fcb590e172d5e"
   dependencies:
@@ -990,7 +990,7 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@2.0.3, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.0, inherits@~2.0.1:
+inherits@2, inherits@2.0.3, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
@@ -1377,9 +1377,13 @@ mime-types@^2.1.12, mime-types@~2.1.11, mime-types@~2.1.15, mime-types@~2.1.7:
   dependencies:
     mime-db "~1.27.0"
 
-mime@1.3.4, mime@~1.3.4:
+mime@1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.3.4.tgz#115f9e3b6b3daf2959983cb38f149a2d40eb5d53"
+
+mime@~1.3.4:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-1.3.6.tgz#591d84d3653a6b0b4a3b9df8de5aa8108e72e5e0"
 
 minimatch@3, minimatch@^3.0.0, minimatch@^3.0.2, minimatch@~3.0.0:
   version "3.0.4"
@@ -1500,13 +1504,13 @@ mqtt-packet@^3.0.0, mqtt-packet@^3.4.7:
     inherits "^2.0.1"
 
 mqtt-packet@^5.2.1:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/mqtt-packet/-/mqtt-packet-5.3.0.tgz#078ed59ae4c06febf3b3eaca90b50e97e269f206"
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/mqtt-packet/-/mqtt-packet-5.4.0.tgz#387104c06aa68fbb9f8159d0c722dd5c3e45df22"
   dependencies:
-    bl "^1.2.0"
+    bl "^1.2.1"
     inherits "^2.0.3"
     process-nextick-args "^1.0.7"
-    safe-buffer "^5.0.1"
+    safe-buffer "^5.1.0"
 
 mqtt@^1.10.0, mqtt@^1.6.3:
   version "1.14.1"
@@ -1528,8 +1532,8 @@ mqtt@^1.10.0, mqtt@^1.6.3:
     xtend "^4.0.0"
 
 mqtt@^2.4.0:
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/mqtt/-/mqtt-2.8.2.tgz#c5e95ad95784bbba19f2b6f0bb6dd9e5536dd7a8"
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/mqtt/-/mqtt-2.9.0.tgz#379ceb787a52fc15cb8fc96d558a32c123f12a9d"
   dependencies:
     commist "^1.0.0"
     concat-stream "^1.6.0"
@@ -1539,7 +1543,7 @@ mqtt@^2.4.0:
     minimist "^1.2.0"
     mqtt-packet "^5.2.1"
     pump "^1.0.2"
-    readable-stream "^2.2.9"
+    readable-stream "^2.2.11"
     reinterval "^1.1.0"
     split2 "^2.1.1"
     websocket-stream "^5.0.0"
@@ -2007,15 +2011,15 @@ readable-stream@1.0.31:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-"readable-stream@> 1.0.0 < 3.0.0", readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.1.4, readable-stream@^2.1.5, readable-stream@^2.2.0, readable-stream@^2.2.2, readable-stream@^2.2.9:
-  version "2.2.11"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.2.11.tgz#0796b31f8d7688007ff0b93a8088d34aa17c0f72"
+"readable-stream@> 1.0.0 < 3.0.0", readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.1.4, readable-stream@^2.1.5, readable-stream@^2.2.0, readable-stream@^2.2.11, readable-stream@^2.2.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.2.tgz#5a04df05e4f57fe3f0dc68fdd11dc5c97c7e6f4d"
   dependencies:
     core-util-is "~1.0.0"
-    inherits "~2.0.1"
+    inherits "~2.0.3"
     isarray "~1.0.0"
     process-nextick-args "~1.0.6"
-    safe-buffer "~5.0.1"
+    safe-buffer "~5.1.0"
     string_decoder "~1.0.0"
     util-deprecate "~1.0.1"
 
@@ -2090,8 +2094,8 @@ request@2, request@^2.81.0:
     uuid "^3.0.0"
 
 require_optional@~1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/require_optional/-/require_optional-1.0.0.tgz#52a86137a849728eb60a55533617f8f914f59abf"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/require_optional/-/require_optional-1.0.1.tgz#4cf35a4247f64ca3df8c2ef208cc494b1ca8fc2e"
   dependencies:
     resolve-from "^2.0.0"
     semver "^5.1.0"
@@ -2124,7 +2128,11 @@ rimraf@2, rimraf@^2.5.1, rimraf@^2.6.1:
   dependencies:
     glob "^7.0.5"
 
-safe-buffer@^5.0.1, safe-buffer@~5.0.1:
+safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@~5.1.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
+
+safe-buffer@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.0.1.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
 
@@ -2314,10 +2322,10 @@ string_decoder@~0.10.x:
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
 
 string_decoder@~1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.2.tgz#b29e1f4e1125fa97a10382b8a533737b7491e179"
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.3.tgz#0fc67d7c141825de94282dd536bec6b9bce860ab"
   dependencies:
-    safe-buffer "~5.0.1"
+    safe-buffer "~5.1.0"
 
 stringstream@~0.0.4:
   version "0.0.5"
@@ -2519,8 +2527,8 @@ uuid@^2.0.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
 uuid@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 
 vary@~1.1.1:
   version "1.1.1"
