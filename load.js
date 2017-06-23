@@ -29,4 +29,3 @@ automate_sys.init({
   then: test shit out of it, extra error handling, etc
   then get automate_core back up to date
  */
-

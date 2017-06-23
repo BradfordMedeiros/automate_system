@@ -1,8 +1,30 @@
 
-const getEvents = db => {
+const validateGetEventsParameters = options => {
+  if (options !== undefined){
+    if (options.limit && typeof(options.limit) !== typeof(1)){
+      throw (new Error('logging:events:getEvents limit is not defined as number'));
+      if (limit < 1){
+        throw (new Error('logging:events:getEvents limit must be at least 1'));
+      }
+    }
+  }
+};
+
+
+const getEvents = (db, options) => {
+  validateGetEventsParameters(options);
+
+  let query = `SELECT * FROM events`;
+  if (options){
+    const limit = options.limit;
+    if (limit !== undefined){
+      query = `${query} limit ${limit}`
+    }
+  }
+
   return new Promise((resolve, reject) => {
     db.open().then(database => {
-      database.all(`SELECT * FROM events`, (err, values) => {
+      database.all(query, (err, values) => {
         if (err) {
           reject(err);
         } else {
@@ -33,3 +55,4 @@ module.exports = {
   onEventData,
   getEvents,
 };
+

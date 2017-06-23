@@ -6,7 +6,7 @@ const loadLogging = db => {
     const logging = {
       events: {
         onEventData: (topic, value) => events.onEventData(db, topic, value),
-        getEvents: () => events.getEvents(db),
+        getEvents: options => events.getEvents(db, options),
       },
       history: {
         onHistoryData: (topic, value) => history.onHistoryData(db, topic, value),
