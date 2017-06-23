@@ -36,6 +36,10 @@ const addStateData = (topic, value) => {
 };
 
 const unregisterState = (db, topic) => new Promise((resolve, reject) => {
+  if (typeof(topic) !== typeof('')){
+    throw (new Error('baseSystem:states:unregisterState topic must be a string'));
+  }
+
   db.open().then(database => {
     database.all(`DELETE FROM states WHERE topic = ('${topic}')`, (err) => {
       delete states[topic];

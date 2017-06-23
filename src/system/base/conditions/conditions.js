@@ -52,7 +52,6 @@ const addCondition = (db,  conditionName, eval ) => {
 const deleteCondition = (db, conditionName) => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all(`DELETE FROM conditions WHERE name = ('${conditionName}')`, (err) => {
-      //database.close();
       delete conditions[conditionName];
       if (err){
         reject(err);
