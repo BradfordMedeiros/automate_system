@@ -41,7 +41,14 @@ const transformConditionString = (conditionString) => {
   return eval(evalString);
 };
 
-const addCondition = (db,  conditionName, eval ) => {
+const addCondition = (db,  conditionName, eval, extraArg) => {
+  if (typeof(conditionName) !== typeof('')){
+    throw (new Error('baseSystem:conditions:addCondition conditionName must be a string'));
+  }
+  if (typeof(eval) !== typeof('')){
+    throw (new Error('baseSystem:conditions:addCondition eval must be a string'));
+  }
+
   conditions[conditionName] = {
     name: conditionName,
     eval: () => transformConditionString(eval)({ getStates }),
@@ -50,6 +57,10 @@ const addCondition = (db,  conditionName, eval ) => {
 };
 
 const deleteCondition = (db, conditionName) => new Promise((resolve, reject) => {
+  if (typeof(conditionName) !== typeof('')){
+    throw (new Error('baseSystem:conditions:deleteCondition conditionName must be a string'));
+  }
+
   db.open().then(database => {
     database.all(`DELETE FROM conditions WHERE name = ('${conditionName}')`, (err) => {
       delete conditions[conditionName];
