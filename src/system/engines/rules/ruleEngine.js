@@ -77,9 +77,12 @@ const addRule = (db, ruleName, conditionName, strategy, rate, topic, value) => {
 };
 
 const deleteRule = (db, ruleName) => new Promise((resolve, reject) => {
+  if (typeof(ruleName) !== typeof('')){
+    throw (new Error('engines:ruleEngine:deleteRule ruleName must be a string'));
+  }
+
   db.open().then(database => {
     database.run(`DELETE FROM rules_engine WHERE name = ('${ruleName}')`, (err) => {
-      // database.close();
       rules[ruleName].stop();
       delete rules[ruleName];
       if (err){
