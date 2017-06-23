@@ -10,9 +10,6 @@ const startHttpBridge = require('./steps/startHttpBridge');
 const createSystemHooks = require('./hooks/createSystemHooks');
 const handleMqttMessage =  require('./hooks/handleMqttMessage');
 
-process.on("unhandledRejection", function (err) {
-  console.error("unhandledRejection: " + err.stack); // or whatever.
-});
 
 const injectStop = (system, setup) => {
   system.stop = () => {
@@ -26,9 +23,9 @@ const injectStop = (system, setup) => {
 
 const setup = { };
 const initializeSystem = (resourceFile, mqtt,  httpBridge) => new Promise((resolve, reject) => {
-  startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort}).then(server => {
+  startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort, useInternalBroker: mqtt.useInternalBroker }).then(server => {
     setup.server = server;
-    mqttSystem({mqttPort: mqtt.mqttPort}).then(mqttClient => {
+    mqttSystem({ mqttPort: mqtt.mqttPort }).then(mqttClient => {
       setup.mqttClient = mqttClient;
       const databasePromise = getDatabase(resourceFile);
       loadSystem(databasePromise, () => mqttClient).then(theSystem => {

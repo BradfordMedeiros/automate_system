@@ -13,6 +13,7 @@ automate_sys.init({
   verbose: true,
   mqtt: {
     // need to add: mqttIp
+    useInternalBroker: false,
     mqttPort: 1883,
     httpPort: 4000,
   },
