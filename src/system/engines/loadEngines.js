@@ -8,7 +8,7 @@ const loadEngines = (db, getActions, getConditions, getMqttClient) => {
   const loadStateScriptEngine = stateScriptEngine.loadStateScripts(db, getMqttClient);
   const loadActionEngine = actionScriptEngine.loadActionScripts(db);
   const loadSequenceEngine = sequenceEngine.loadSequences(db, getActions);
-  const loadRuleEngine = ruleEngine.loadRules(db, getConditions);
+  const loadRuleEngine = ruleEngine.loadRules(db, getConditions, getMqttClient);
   const loadScheduleEngine = schedulerEngine.loadSchedules(db, getMqttClient);
 
   const enginesLoaded = Promise.all([loadStateScriptEngine, loadActionEngine, loadSequenceEngine, loadRuleEngine, loadScheduleEngine]);

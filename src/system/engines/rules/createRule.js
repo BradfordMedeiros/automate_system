@@ -8,25 +8,23 @@ const strategyMapping = {
 };
 
 
-const createRule = (conditionName, getConditions, strategy, rate, topic, value) => {
+const createRule = (conditionName, getConditions, strategy, rate, topic, value, getMqttClient) => {
   const condition = getConditions()[conditionName];
   if (condition === undefined){
-    throw (new Error('Condition:  ', conditionName, ' is not an condition, so cannot make a rule'));
+    throw (new Error('engines:ruleEngine:addRule condition:  '+ conditionName+ ' is not an condition, so cannot make a rule'));
   }
-
   if (Object.keys(strategyMapping).indexOf(strategy) < 0){
-    throw (new Error('strategy: ',strategy, ' is not a valid strategy'));
+    throw (new Error('engines:ruleEngine:addRule strategy: '+strategy+ ' is not a valid strategy'));
   }
 
   const getEvaluator = strategyMapping[strategy];
 
   let handle;
   return {
-    run: publish => {
+    run: () => {
       if (!handle){
         handle = getEvaluator(condition.eval, rate).do(() => {
-          console.log('broadcast mqtt here: ', topic);
-          publish(topic, value);
+          getMqttClient().publish(topic, value);
         });
       }else{
         handle.resume();

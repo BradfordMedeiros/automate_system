@@ -1,10 +1,15 @@
 const createRule = require('./createRule');
 
 let conditionGetter = () => {
-  throw (new Error("Get conditions never set: Were rules loaded?"));
+  throw (new Error("Get conditions never set: Was rule engine loaded?"));
 };
-
 let getConditions = () => conditionGetter();
+
+let mqttClientGetter = () => {
+  throw (new Error("getMqttClient never set: Was rule engine loaded?"));
+};
+let getMqttClient = () => mqttClientGetter();
+
 
 let rules = { };
 
@@ -39,7 +44,26 @@ const saveRuleToDb = (db, ruleName, conditionName, strategy, rate, topic, value)
 });
 
 const addRule = (db, ruleName, conditionName, strategy, rate, topic, value) => {
-  const ruleEval = createRule(conditionName, getConditions, strategy, rate, topic, value);
+  if (typeof(ruleName) !== typeof('')){
+    throw (new Error('engines:ruleEngine:addRule ruleName must be a string'));
+  }
+  if (typeof(conditionName) !== typeof('')){
+    throw (new Error('engines:ruleEngine:addRule conditionName must be a string'));
+  }
+  if (typeof(strategy) !== typeof('')){
+    throw (new Error('engines:ruleEngine:addRule strategy must be a string'));
+  }
+  if (typeof(rate) !== typeof(1) || rate <= 0){
+    throw (new Error('engines:ruleEngine:addRule rate must be a number greater than 0'));
+  }
+  if (typeof(topic) !== typeof('')){
+    throw (new Error('engines:ruleEngine:addRule topic must be a string'));
+  }
+  if (typeof(value) !== typeof('')){
+    throw (new Error('engines:ruleEngine:addRule value must be a string'));
+  }
+
+  const ruleEval = createRule(conditionName, getConditions, strategy, rate, topic, value, getMqttClient);
   rules[ruleName] = {
     name: ruleName,
     conditionName,
@@ -48,6 +72,7 @@ const addRule = (db, ruleName, conditionName, strategy, rate, topic, value) => {
     run: ruleEval.run,
     stop: ruleEval.stop,
   };
+  rules[ruleName].run();
   return saveRuleToDb(db, ruleName, conditionName, strategy, rate, topic, value);
 };
 
@@ -66,8 +91,9 @@ const deleteRule = (db, ruleName) => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const loadRules = (db, getConditionsFunc) => new Promise((resolve, reject) => {
+const loadRules = (db, getConditionsFunc, getMqttClient) => new Promise((resolve, reject) => {
   getConditions = getConditionsFunc;
+  mqttClientGetter =  getMqttClient;
   getRulesFromDb(db).then(loadedRules => {
     loadedRules.forEach(rule => {
       addRule(db, rule.name, rule.conditionName, rule.strategy, rule.rate, rule.topic, rule.value);
