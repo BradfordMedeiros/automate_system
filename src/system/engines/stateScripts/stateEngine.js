@@ -42,6 +42,16 @@ const transformStateScriptToString = (conditionString) => {
 
 
 const addStateScript = (db,  stateScriptName, topic, eval ) => {
+  if (typeof(stateScriptName) !== typeof('')){
+    throw (new Error('engines:stateScript:addStateScript stateScriptName must be a string'));
+  }
+  if (typeof(topic) !== typeof('')){
+    throw (new Error('engines:stateScript:addStateScript topic must be a string'));
+  }
+  if (typeof(eval) !== typeof('')){
+    throw (new Error('engines:stateScript:addStateScript eval must be a string'));
+  }
+
   let handle = undefined;
 
   const evalFunction = () => transformStateScriptToString(eval)({  });
@@ -62,6 +72,9 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
 };
 
 const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject) => {
+  if (typeof(stateScriptName) !== typeof('')){
+    throw (new Error('engines:stateScript:deleteStateScript stateScriptName must be a string'));
+  }
   db.open().then(database => {
     database.all(`DELETE FROM state_engine WHERE name = ('${stateScriptName}')`, (err) => {
       stateScripts[stateScriptName].stop();
