@@ -51,8 +51,17 @@ const saveScheduleToDb = (db, name,  schedule, topic, value) => new Promise((res
 
 
 const addSchedule = (db,  scheduleName, schedule, topic, value) => {
-  if (!isValidSchedule(schedule)){
-    throw (new Error('Invalid pattern for schedule '+ scheduleName+ ' got pattern: '+ schedule));
+  if (typeof(scheduleName) !== typeof('')){
+    throw (new Error('engines:scheduler:addSchedule scheduleName must be a string'));
+  }
+  if (typeof(scheduleName) !== typeof('') || !isValidSchedule(schedule) ){
+    throw (new Error('engines:scheduler:addSchedule schedule must be a valid schedule (string)'));
+  }
+  if (typeof(topic) !== typeof('')){
+    throw (new Error('engines:scheduler:addSchedule topic must be a string'));
+  }
+  if (typeof(value) !== typeof('')){
+    throw (new Error('engines:scheduler:addSchedule value must be a string'));
   }
 
   let job;
@@ -82,6 +91,10 @@ const addSchedule = (db,  scheduleName, schedule, topic, value) => {
 };
 
 const deleteSchedule = (db, scheduleName) => new Promise((resolve, reject) => {
+  if (typeof(scheduleName) !== typeof('')){
+    throw (new Error('engines:scheduler:deleteSchedule scheduleName must be a string'));
+  }
+
   db.open().then(database => {
     database.all(`DELETE FROM scheduler_engine WHERE name = ('${scheduleName}')`, (err) => {
       schedules[scheduleName].stop();
