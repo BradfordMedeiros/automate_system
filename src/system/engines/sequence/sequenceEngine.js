@@ -1,10 +1,10 @@
 const createSequence = require('./createSequence');
 
-let actionGetter = () => {
-  throw (new Error("Get states never set: Were conditions loaded?"));
+let mqttClientGetter = () => {
+  throw (new Error("getMqttClient never set: Was sequence engine loaded?"));
 };
 
-let getActions = () => actionGetter();
+let getMqttClient = () => mqttClientGetter();
 
 let sequences = { };
 
@@ -37,14 +37,14 @@ const addSequence = (db, sequenceName, sequenceParts) => {
   if (typeof(sequenceName) !== typeof('')){
     throw (new Error('engines:sequenceEngine:addSequence sequenceName must be a string'));
   }
-  if (!Array.isArray(sequenceParts)){
-    throw (new Error('engines:sequenceEngine:addSequence sequenceParts must be an array'));
+
+  if (!createSequence.isValidParts(sequenceParts)){
+    throw (new Error('engines:sequenceEngine:addSequence sequenceParts format is invalid'));
+
   }
-
-
   sequences[sequenceName] = {
     name: sequenceName,
-    run: () => createSequence(sequenceParts, getActions).run(),
+    run: () => createSequence.create(sequenceParts, mqttClientGetter).run(),
   };
   return saveSequenceToDb(db, sequenceName, sequenceParts);
 };
@@ -66,8 +66,8 @@ const deleteSequence = (db, sequenceName) => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const loadSequences = (db, getActionsFunc) => new Promise((resolve, reject) => {
-  getActions = getActionsFunc;
+const loadSequences = (db, getMqttClient) => new Promise((resolve, reject) => {
+  mqttClientGetter =  getMqttClient;
   getSequencesFromDb(db).then(loadedSequences => {
     loadedSequences.forEach(sequence => {
       addSequence(db, sequence.name, JSON.parse(sequence.parts));

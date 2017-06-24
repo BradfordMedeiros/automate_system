@@ -20,10 +20,7 @@ const createSystemHooks = theSystem => ({
     const sequenceName = topic.split('/').filter(x => x.length > 0).slice(1).join('/');
     const matchingSequence = theSystem.engines.sequenceEngine.getSequences()[sequenceName];
     if (matchingSequence) {
-      console.log('found a match');
       matchingSequence.run();
-    } else {
-      console.log('no match for ', topic);
     }
   },
   onEvent: (topic, message) => {

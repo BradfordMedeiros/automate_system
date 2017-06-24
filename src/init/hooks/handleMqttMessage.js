@@ -13,9 +13,7 @@ const handleMessage = (client, { onState, onAction, onSequence, onEvent, onHisto
       onEvent(topic, message.toString(), client);
     }
   }else if (topic.indexOf('/sequences') === 0 || topic.indexOf('sequences') === 0){
-    console.log('is a seuqence');
     if (onSequence){
-      console.log('on sequence');
       onSequence(topic, message.toString(), client);
     }
   }

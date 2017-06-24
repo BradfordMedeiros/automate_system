@@ -1,40 +1,75 @@
 
 const sequencer = require('when_do').sequencer;
 
-const translatePart = (sequencerSession, part, getActions) => {
+const translatePart = (sequencerSession, part, getMqttClient) => {
   if (part.type === 'action'){
-    const functionEval = getActions()[part.value] ? getActions()[part.value]: 'default action';
-    return sequencerSession.then(() => console.log('perform: ', functionEval));
+    const topic = part.options.topic;
+    const value = part.options.value;
+    return sequencerSession.then(() => getMqttClient().publish(topic, value));
   }else if (part.type === 'wait'){
-    return sequencerSession.wait(part.value);
+    return sequencerSession.wait(Number(part.options));
   }
 };
 
-/*const r = {
-  rr : [
-    {
-      type: 'broadcast_mqtt',
-      options: {
-        topic: '/actions/door',
-        value: 'open',
-        iterations: 2000,
-        wait: 100,
-      }
-    },
-    {
-      type: 'wait',
-      value: : 2000
-    },
 
-  ]
-};*/
-
-const createRunFromSequenceParts = (sequenceParts, getActions) => {
+const createRunFromSequenceParts = (sequenceParts, getMqttClient) => {
   let sequencerSession = sequencer();
   sequenceParts.forEach(part => {
-    sequencerSession = translatePart(sequencerSession, part, getActions);
+    sequencerSession = translatePart(sequencerSession, part, getMqttClient);
   });
   return sequencerSession;
 };
 
-module.exports = createRunFromSequenceParts;
+const isValidWait = options => {
+  return Number.isInteger(Number(options));
+};
+
+const isValidAction = options => {
+  return (
+    (options !== undefined) &&
+    (typeof(options.topic) === typeof('')) &&
+    (typeof(options.value) === typeof(''))
+  );
+};
+
+const isValidParts = sequenceParts => {
+  if (Array.isArray(sequenceParts)){
+    const validParts = sequenceParts.filter(part => {
+      if (part.type === 'action'){
+        return isValidAction(part.options);
+      }else if (part.type === 'wait'){
+        return isValidWait(part.options);
+      }else{
+        return false;
+      }
+    });
+
+    return validParts.length === sequenceParts.length;
+  }else{
+    return false;
+  }
+};
+
+module.exports = {
+  create: createRunFromSequenceParts,
+  isValidParts,
+};
+
+/*const r = {
+ rr : [
+ {
+ type: 'broadcast_mqtt',
+ options: {
+ topic: '/actions/door',
+ value: 'open',
+ iterations: 2000,
+ wait: 100,
+ }
+ },
+ {
+ type: 'wait',
+ options: : 2000
+ },
+
+ ]
+ };*/
