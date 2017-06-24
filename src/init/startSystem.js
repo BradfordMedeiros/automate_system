@@ -22,7 +22,7 @@ const injectStop = (system, setup) => {
 };
 
 const setup = { };
-const initializeSystem = (resourceFile, mqtt,  httpBridge) => new Promise((resolve, reject) => {
+const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent) => new Promise((resolve, reject) => {
   startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort, useInternalBroker: mqtt.useInternalBroker }).then(server => {
     setup.server = server;
     mqttSystem({ mqttPort: mqtt.mqttPort }).then(mqttClient => {
@@ -30,25 +30,26 @@ const initializeSystem = (resourceFile, mqtt,  httpBridge) => new Promise((resol
       const databasePromise = getDatabase(resourceFile);
       loadSystem(databasePromise, () => mqttClient).then(theSystem => {
         setup.databasePromise = databasePromise;
-        mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem)));
+        mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem, onEvent)));
         if (httpBridge.enabled === true) {
           startHttpBridge(theSystem, mqttClient, httpBridge.port).then(httpServer => {
             setup.httpServer = httpServer;
             resolve(injectStop(theSystem, setup));
           }).catch(reject);
         } else {
-          resolve(inject(theSystem, setup))
+          setup.httpServer = { close: () => {} }
+          resolve(injectStop(theSystem, setup))
         }
       }).catch(reject);
     }).catch(reject);
   }).catch(reject);
 });
 
-const start = ({ resourceFile, mqtt, httpBridge, verbose }) => new Promise((resolve, reject) => {
+const start = ({ resourceFile, mqtt, httpBridge, onEvent, verbose }) => new Promise((resolve, reject) => {
   printStartMessage({resourceFile, mqtt, httpBridge, verbose});
   migrateSystem(resourceFile).then(
     () => {
-      initializeSystem(resourceFile, mqtt, httpBridge).then(sys => resolve(sys)).catch(reject);
+      initializeSystem(resourceFile, mqtt, httpBridge, onEvent).then(sys => resolve(sys)).catch(reject);
     }
   ).catch(reject);
 });

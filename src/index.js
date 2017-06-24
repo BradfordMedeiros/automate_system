@@ -4,12 +4,43 @@ const mapSystemToApiLayer = require('./mapSystemToApiLayer');
 
 const init = ({
   resourceFile,
-  mqtt,
-  httpBridge,
+  mqtt = { mqttPort: 1883, httpPort: 4000 },
+  httpBridge = { enabled: false },
+  onEvent,
   verbose,
 } = {}) => {
+  console.log('mqtt ', mqtt.mqttPort);
+
   if (typeof(resourceFile) !== typeof('')){
     throw (new Error("Resource file string must be defined"));
+  }
+  if (typeof(mqtt) !== typeof({})){
+    throw new Error('Mqtt parameters must be defined');
+  }
+  if (typeof(mqtt.mqttPort) !== typeof(1)){
+    throw new Error('mqtt mqttPort must be defined');
+  }
+  if (mqtt.useInternalBroker){
+    if (typeof(mqtt.useInternalBroker) !== typeof(true)){
+      throw (new Error('use internal broker must be a boolean value'));
+    }
+  }else{
+    if (typeof(mqtt.httpPort) !== typeof(1)){
+      throw (new Error('mqtt httpPort must be defined if using internal broker (default behavior)'))
+    }
+  }
+  if (httpBridge){
+    if (typeof(httpBridge.enabled) !== typeof(true)){
+      throw (new Error('http bridge enable must be boolean value'));
+    }
+    if (httpBridge.enabled){
+      if (!Number.isInteger(httpBridge.port)){
+        throw (new Error('http bridge: port must be defined (positive integer value'));
+      }
+    }
+  }
+  if ((onEvent !== undefined) && (typeof(onEvent) !== 'function')){
+    throw (new Error("onEvent must be defined as a function if defined"))
   }
 
   return new Promise((resolve, reject) => {
@@ -17,6 +48,7 @@ const init = ({
       resourceFile,
       mqtt,
       httpBridge,
+      onEvent,
       verbose,
     }).then(system => {
       resolve(mapSystemToApiLayer(system, false));

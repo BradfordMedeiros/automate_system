@@ -21,6 +21,10 @@ automate_sys.init({
     enabled: true,
     port: 1657,
   },
+  onEvent: ({ eventName, message }) => {
+   console.log('event name: ', eventName);
+   console.log('message: ', message);
+  } ,
 }).then(system => sys = system);
 
 
