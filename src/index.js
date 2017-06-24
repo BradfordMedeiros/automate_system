@@ -7,7 +7,7 @@ const init = ({
   mqtt,
   httpBridge,
   verbose,
-}) => {
+} = {}) => {
   if (typeof(resourceFile) !== typeof('')){
     throw (new Error("Resource file string must be defined"));
   }
