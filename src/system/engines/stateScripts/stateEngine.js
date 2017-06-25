@@ -78,8 +78,12 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
       handle = undefined;
     }
   };
-  stateScripts[stateScriptName].run();
-  saveStateScriptToDb(db, stateScriptName, topic, eval);
+
+  return new Promise((resolve, reject) => {
+    stateScripts[stateScriptName].run();
+    saveStateScriptToDb(db, stateScriptName, topic, eval).then(resolve).catch(reject);
+  });
+
 };
 
 const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject) => {
