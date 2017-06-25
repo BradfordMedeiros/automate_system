@@ -49,11 +49,13 @@ const addCondition = (db,  conditionName, eval, extraArg) => {
     throw (new Error('baseSystem:conditions:addCondition eval must be a string'));
   }
 
-  conditions[conditionName] = {
-    name: conditionName,
-    eval: () => transformConditionString(eval)({ getStates }),
-  };
-  saveConditionToDb(db, conditionName, eval);
+  return new Promise((resolve, reject) => {
+    conditions[conditionName] = {
+      name: conditionName,
+      eval: () => transformConditionString(eval)({ getStates }),
+    };
+    saveConditionToDb(db, conditionName, eval).then(resolve).catch(reject);
+  });
 };
 
 const deleteCondition = (db, conditionName) => new Promise((resolve, reject) => {
