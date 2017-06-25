@@ -17,7 +17,7 @@ const createSystemHooks = (theSystem, onEvent) => ({
   },
   onSequence: (topic, message) => {
     // match the sequence and call execute
-    const sequenceName = topic.split('/').filter(x => x.length > 0).slice(1).join('/');
+    const sequenceName = topic.split('/').slice(1).join('/');
     const matchingSequence = theSystem.engines.sequenceEngine.getSequences()[sequenceName];
     if (matchingSequence) {
       matchingSequence.run();
