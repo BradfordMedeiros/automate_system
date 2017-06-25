@@ -62,6 +62,7 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
   stateScripts[stateScriptName] = {
     name: stateScriptName,
     topic,
+    evalString: eval,
     eval: evalFunction,
     run: () => {
       if (handle){
