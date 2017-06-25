@@ -9,6 +9,7 @@ const startMqttBroker = ({ mqttPort = 1883, httpPort = 4000, useInternalBroker =
         { type: "mqtt", port: mqttPort },
         { type: "http", port: httpPort },
       ],
+      persistence: { factory: mosca.persistence.Memory },
     };
     return (new Promise((resolve, reject) => {
       const server = new mosca.Server(moscaSetting);
