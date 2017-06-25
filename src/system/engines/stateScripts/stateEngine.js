@@ -64,12 +64,18 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
     topic,
     eval: evalFunction,
     run: () => {
+      if (handle){
+        return;
+      }
       handle = setInterval(() => {
         const value = evalFunction();
         mqttClientGetter().publish(topic, value === undefined ? '' : value.toString());
       }, 1000);
     },
-    stop: () => clearInterval(handle),
+    stop: () => {
+      clearInterval(handle);
+      handle = undefined;
+    }
   };
   stateScripts[stateScriptName].run();
   saveStateScriptToDb(db, stateScriptName, topic, eval);
