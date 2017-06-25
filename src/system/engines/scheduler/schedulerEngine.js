@@ -91,7 +91,7 @@ const addSchedule = (db,  scheduleName, schedule, topic, value) => {
     }
   };
   schedules[scheduleName].start();
-  saveScheduleToDb(db, scheduleName, schedule, topic, value);
+  return saveScheduleToDb(db, scheduleName, schedule, topic, value);
 };
 
 const deleteSchedule = (db, scheduleName) => new Promise((resolve, reject) => {
