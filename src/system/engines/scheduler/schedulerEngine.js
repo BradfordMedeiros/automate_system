@@ -64,6 +64,10 @@ const addSchedule = (db,  scheduleName, schedule, topic, value) => {
     throw (new Error('engines:scheduler:addSchedule value must be a string'));
   }
 
+  if (schedules[scheduleName] !== undefined){
+    throw (new Error(`engines:scheduler:addSchedule schedule ${scheduleName} already exists`));
+  }
+
   let job;
   schedules[scheduleName] = {
     name: scheduleName,

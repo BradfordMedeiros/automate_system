@@ -52,6 +52,10 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
     throw (new Error('engines:stateScript:addStateScript eval must be a string'));
   }
 
+  if (stateScripts[stateScriptName] !== undefined){
+    throw (new Error(`engines:stateEngine:addStateScript stateScript ${stateScriptName} already exists`));
+  }
+
   let handle = undefined;
 
   const evalFunction = () => transformStateScriptToString(eval)({  });

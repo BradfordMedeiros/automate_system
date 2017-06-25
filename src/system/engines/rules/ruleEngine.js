@@ -63,6 +63,10 @@ const addRule = (db, ruleName, conditionName, strategy, rate, topic, value) => {
     throw (new Error('engines:ruleEngine:addRule value must be a string'));
   }
 
+  if (rules[ruleName] !== undefined){
+    throw (new Error(`engines:ruleEngine:addRule rule ${ruleName} already exists`));
+  }
+
   const ruleEval = createRule(conditionName, getConditions, strategy, rate, topic, value, getMqttClient);
   rules[ruleName] = {
     name: ruleName,

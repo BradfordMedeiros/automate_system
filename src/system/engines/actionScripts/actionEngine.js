@@ -57,6 +57,10 @@ const addActionScript = (db,  actionScriptName, topic, script, toTopic ) => {
     throw (new Error('engines:actionScript:addActionScript toTopic must be a string'));
   }
 
+  if (actionScripts[actionScriptName] !== undefined){
+    throw (new Error(`engines:actionScript:addActionScript actionScript ${actionScriptName} already exists`));
+  }
+
   const evalFunction = () => transformActionScriptToString(script)({  });
   actionScripts[actionScriptName] = {
     name: actionScriptName,

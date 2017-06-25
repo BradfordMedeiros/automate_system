@@ -38,6 +38,10 @@ const addSequence = (db, sequenceName, sequenceParts) => {
     throw (new Error('engines:sequenceEngine:addSequence sequenceName must be a string'));
   }
 
+  if (sequences[sequenceName] !== undefined){
+    throw (new Error(`engines:sequenceEngine:addSequence sequence ${sequenceName} already exists`));
+  }
+
   if (!createSequence.isValidParts(sequenceParts)){
     throw (new Error('engines:sequenceEngine:addSequence sequenceParts format is invalid'));
 
