@@ -7,9 +7,11 @@ const mapSystemToApiLayer = (system, raw) => {
       baseSystem: {
         actions: {
           getActions: system.baseSystem.actions.getActions,
+          forceAddAction: system.baseSystem.actions.onActionData,
         },
         states: {
           getStates: system.baseSystem.states.getStates,
+          forceAddState: system.baseSystem.states.onStateData,
         },
         conditions: system.baseSystem.conditions,
       },
