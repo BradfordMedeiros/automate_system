@@ -10,7 +10,7 @@ const createSystemHooks = (theSystem, onEvent) => ({
     theSystem.baseSystem.actions.onActionData(topic, message).catch(handleError);
     const data = theSystem.engines.actionScriptEngine.onMqttTopic(topic, message);
     data.forEach(item => {
-      client.publish(item.toTopic, item.value.toString(), (err) => {
+      client.publish(item.toTopic, item.value === undefined ? 'undefined' : item.value.toString(), (err) => {
         console.log(err);
       });
     })
