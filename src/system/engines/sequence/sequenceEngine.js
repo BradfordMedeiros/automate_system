@@ -48,6 +48,7 @@ const addSequence = (db, sequenceName, sequenceParts) => {
   }
   sequences[sequenceName] = {
     name: sequenceName,
+    sequenceParts,
     run: () => createSequence.create(sequenceParts, mqttClientGetter).run(),
   };
   return saveSequenceToDb(db, sequenceName, sequenceParts);
