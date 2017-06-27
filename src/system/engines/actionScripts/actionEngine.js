@@ -66,6 +66,7 @@ const addActionScript = (db,  actionScriptName, topic, script, toTopic ) => {
     name: actionScriptName,
     topic,
     toTopic,
+    script,
     getValue: evalFunction
   };
   return saveActionScriptToDb(db, actionScriptName, topic, script, toTopic);
