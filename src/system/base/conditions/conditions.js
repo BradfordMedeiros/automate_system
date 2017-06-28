@@ -10,7 +10,6 @@ let getStates = () => stateGetter();
 const getConditionsFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
     database.all('SELECT * FROM conditions', (err, actions) => {
-      //database.close();
       if (err){
         reject(err);
       }else{

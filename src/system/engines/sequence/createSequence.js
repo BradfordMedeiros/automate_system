@@ -58,13 +58,12 @@ module.exports = {
 /*const r = {
  rr : [
  {
- type: 'broadcast_mqtt',
- options: {
- topic: '/actions/door',
- value: 'open',
- iterations: 2000,
- wait: 100,
- }
+    type: 'broadcast_mqtt',
+    options: {
+      topic: '/actions/door',
+      value: 'open',
+
+    }
  },
  {
  type: 'wait',
