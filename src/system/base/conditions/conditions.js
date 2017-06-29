@@ -23,7 +23,6 @@ const saveConditionToDb = (db, conditionName, eval) => new Promise((resolve, rej
   db.open().then(database => {
     const query = `INSERT OR REPLACE INTO conditions (name, eval) values ('${conditionName}', '${eval}')`;
     database.all(query, (err) => {
-      //database.close();
       if (err){
         reject(err);
       }else{
@@ -40,7 +39,7 @@ const transformConditionString = (conditionString) => {
   return eval(evalString);
 };
 
-const addCondition = (db,  conditionName, eval, extraArg) => {
+const addCondition = (db,  conditionName, eval) => {
   if (typeof(conditionName) !== typeof('')){
     throw (new Error('baseSystem:conditions:addCondition conditionName must be a string'));
   }
@@ -51,6 +50,7 @@ const addCondition = (db,  conditionName, eval, extraArg) => {
   return new Promise((resolve, reject) => {
     conditions[conditionName] = {
       name: conditionName,
+      evalString: eval,
       eval: () => transformConditionString(eval)({ getStates }),
     };
     saveConditionToDb(db, conditionName, eval).then(resolve).catch(reject);
