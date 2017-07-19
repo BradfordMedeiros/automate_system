@@ -73,6 +73,8 @@ const addRule = (db, ruleName, conditionName, strategy, rate, topic, value) => {
     conditionName,
     strategy,
     rate,
+    topic,
+    value,
     run: ruleEval.run,
     stop: ruleEval.stop,
   };
