@@ -1,6 +1,6 @@
 {
   "name": "automate_sys",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "automate system",
   "main": "src/index.js",
   "private": true,
