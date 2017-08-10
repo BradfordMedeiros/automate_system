@@ -1,6 +1,7 @@
 
 const start = require('./init/startSystem');
 const mapSystemToApiLayer = require('./mapSystemToApiLayer');
+const migrateDatabase = require('./environment/migrate').createDb;
 
 const init = ({
   resourceFile,
@@ -58,6 +59,7 @@ const init = ({
 
 const automate_sys = {
   init,
+  migrateDatabase,
 };
 
 module.exports = automate_sys;

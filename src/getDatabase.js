@@ -2,26 +2,28 @@
 const sqlite3 = require('sqlite3');
 const process = require('process');
 
-let connection;
+const connectionMap = { };
 
 const getDatabase = databaseName => ({
-  open: () => new Promise((resolve, reject) => {
-    if (connection){
-      resolve(connection);
-    }else{
-      connection = new sqlite3.Database(databaseName, (err) => {
-        if (err){
-          reject(err);
-        }else{
-          resolve(connection)
-        }
-      })
-    }
-  }),
-  close: () => {
-    if (connection){
-      connection.close();
-      connection = undefined;
+  open: () => {
+    return new Promise((resolve, reject) => {
+      if (connectionMap[databaseName]) {
+        resolve(connectionMap[databaseName]);
+      } else {
+        connectionMap[databaseName] = new sqlite3.Database(databaseName, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(connectionMap[databaseName])
+          }
+        })
+      }
+    })
+  },
+  close: databaseName => {
+    if (connectionMap[databaseName]){
+      connectionMap[databaseName].close();
+      delete connectionMap[databaseName];
     }
   },
 });

@@ -41,7 +41,15 @@ const isMigrated =  databaseName => {
 
 const migrateDb = {
   isMigrated: isMigrated,
-  createDb: databaseName => migrate(getDatabase(databaseName)),
+  createDb: databaseName => new Promise((resolve, reject) => {
+    migrate(getDatabase(databaseName)).then(() => {
+      getDatabase(databaseName).close();
+      resolve();
+    }).catch(() => {
+      getDatabase(databaseName).close();
+      reject();
+    })
+  })
 };
 
 module.exports = migrateDb;
