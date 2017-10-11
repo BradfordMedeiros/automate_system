@@ -2,7 +2,7 @@ const handleError = err => {
   console.log(err);
 };
 
-const createSystemHooks = (theSystem, onEvent) => ({
+const createSystemHooks = (theSystem, onEvent, onTopic) => ({
   onState: (topic, messsage) => {
     theSystem.baseSystem.states.onStateData(topic, messsage).catch(handleError);
   },
@@ -27,6 +27,11 @@ const createSystemHooks = (theSystem, onEvent) => ({
     theSystem.logging.events.onEventData(topic, message).catch(handleError);
     if (onEvent){
       onEvent({ eventName: topic, message });
+    }
+  },
+  onTopic: (topic, message) => {
+    if (onTopic){
+      onTopic({ topic, message });
     }
   },
   onHistory: (topic, message) => {

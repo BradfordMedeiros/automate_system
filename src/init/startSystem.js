@@ -22,7 +22,7 @@ const injectStop = (system, setup) => {
 };
 
 const setup = { };
-const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent) => new Promise((resolve, reject) => {
+const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent, onTopic) => new Promise((resolve, reject) => {
   startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort, useInternalBroker: mqtt.useInternalBroker }).then(server => {
     setup.server = server;
     mqttSystem({ mqttPort: mqtt.mqttPort }).then(mqttClient => {
@@ -30,7 +30,7 @@ const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent) => new Promi
       const databasePromise = getDatabase(resourceFile);
       loadSystem(databasePromise, () => mqttClient).then(theSystem => {
         setup.databasePromise = databasePromise;
-        mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem, onEvent)));
+        mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem, onEvent, onTopic)));
         if (httpBridge.enabled === true) {
           startHttpBridge(theSystem, mqttClient, httpBridge.port).then(httpServer => {
             setup.httpServer = httpServer;
@@ -45,11 +45,11 @@ const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent) => new Promi
   }).catch(reject);
 });
 
-const start = ({ resourceFile, mqtt, httpBridge, onEvent, verbose }) => new Promise((resolve, reject) => {
+const start = ({ resourceFile, mqtt, httpBridge, onEvent, onTopic, verbose }) => new Promise((resolve, reject) => {
   printStartMessage({resourceFile, mqtt, httpBridge, verbose});
   migrateSystem(resourceFile).then(
     () => {
-      initializeSystem(resourceFile, mqtt, httpBridge, onEvent).then(sys => resolve(sys)).catch(reject);
+      initializeSystem(resourceFile, mqtt, httpBridge, onEvent, onTopic).then(sys => resolve(sys)).catch(reject);
     }
   ).catch(reject);
 });

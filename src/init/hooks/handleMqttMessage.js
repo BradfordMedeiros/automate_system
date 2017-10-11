@@ -1,5 +1,5 @@
 
-const handleMessage = (client, { onState, onAction, onSequence, onEvent, onHistory }) => (topic, message) => {
+const handleMessage = (client, { onState, onAction, onSequence, onEvent, onHistory, onTopic }) => (topic, message) => {
   if (topic.indexOf('states/') === 0){
     if (onState){
       onState(topic, message.toString(), client);
@@ -18,6 +18,9 @@ const handleMessage = (client, { onState, onAction, onSequence, onEvent, onHisto
     }
   }
 
+  if (onTopic){
+    onTopic(topic, message.toString(), client);
+  }
   if (onHistory){
     onHistory(topic, message.toString(), client);
   }

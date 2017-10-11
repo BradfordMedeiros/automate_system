@@ -24,7 +24,11 @@ automate_sys.init({
   onEvent: ({ eventName, message }) => {
    console.log('event name: ', eventName);
    console.log('message: ', message);
-  } ,
+  },
+  onTopic: ({ topic, message}) => {
+    console.log('topic: ', topic);
+    console.log('message: ', message);
+  },
 }).then(system => sys = system);
 
 

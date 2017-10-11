@@ -8,6 +8,7 @@ const init = ({
   mqtt = { mqttPort: 1883, httpPort: 4000 },
   httpBridge = { enabled: false },
   onEvent,
+  onTopic,
   verbose,
 } = {}) => {
   console.log('mqtt ', mqtt.mqttPort);
@@ -43,6 +44,9 @@ const init = ({
   if ((onEvent !== undefined) && (typeof(onEvent) !== 'function')){
     throw (new Error("onEvent must be defined as a function if defined"))
   }
+  if ((onTopic !== undefined) && (typeof(onTopic) !== 'function')){
+    throw (new Error("onTopic must be defined as a function if defined"))
+  }
 
   return new Promise((resolve, reject) => {
     start({
@@ -50,6 +54,7 @@ const init = ({
       mqtt,
       httpBridge,
       onEvent,
+      onTopic,
       verbose,
     }).then(system => {
       resolve(mapSystemToApiLayer(system, false));
