@@ -8,12 +8,12 @@ const getMqttValue = topic => {
 const validateGetHistoryParameters = options => {
   if (options !== undefined){
     if (options.topic && typeof(options.topic) !== typeof('')){
-      throw (new Error('logging:history:getHistory topic is not defined as string'));
+      throw (new Error('logging:history:getEnv topic is not defined as string'));
     }
     if (options.limit && typeof(options.limit) !== typeof(1)){
-      throw (new Error('logging:history:getHistory limit is not defined as number'));
+      throw (new Error('logging:history:getEnv limit is not defined as number'));
       if (limit < 1){
-        throw (new Error('logging:history:getHistory limit must be at least 1'));
+        throw (new Error('logging:history:getEnv limit must be at least 1'));
       }
     }
   }

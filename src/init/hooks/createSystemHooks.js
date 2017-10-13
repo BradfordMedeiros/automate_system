@@ -35,7 +35,7 @@ const createSystemHooks = (theSystem, onEvent, onTopic) => ({
     }
   },
   onHistory: (topic, message) => {
-    theSystem.logging.history.onHistoryData(topic, message).catch(handleError);
+    theSystem.logging.history.setEnvData(topic, message).catch(handleError);
   },
 });
 
