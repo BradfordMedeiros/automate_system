@@ -40,6 +40,7 @@ const mapSystemToApiLayer = (system, raw) => {
           getEvents: system.logging.events.getEvents,
         }
       },
+      env: system.env,
     };
 
     systemApi.stop = () => {
