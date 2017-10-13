@@ -4,7 +4,8 @@ const createSchema = db => new Promise((resolve, reject) => {
     database.all(
       `CREATE TABLE env (
         name	TEXT NOT NULL,
-        value	TEXT NOT NULL
+        value	TEXT NOT NULL,
+        PRIMARY KEY (name)
       );`, (err) => {
         if (err){
           reject(err);

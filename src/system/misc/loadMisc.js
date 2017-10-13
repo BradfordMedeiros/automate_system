@@ -7,8 +7,9 @@ const loadMisc = db => {
     miscLoaded.then(() => {
       const misc = {
         env: {
-          setEnv: (name, value) =>  env.setEnv(db, name, value),
           getEnv: env.getEnv,
+          deleteEnv: (name, value) => env.deleteEnv(db, name, value),
+          setEnv: (name, value) =>  env.setEnv(db, name, value),
         },
       };
       resolve(misc);
