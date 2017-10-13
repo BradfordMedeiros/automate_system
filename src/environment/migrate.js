@@ -11,10 +11,10 @@ const createSchedulerEngineSchema = require('../system/engines/scheduler/createS
 
 const createEventSchema = require('../system/logging/events/createSchema');
 const createHistorySchema = require('../system/logging/history/createSchema');
+const createEnvSchema = require('../system/misc/createSchema');
 
 const getDatabase = require('../getDatabase');
 const sequencer = require('when_do').sequencer;
-
 
 const migrate = db => {
   return new Promise((resolve, reject) => {
@@ -29,6 +29,7 @@ const migrate = db => {
       .hold(() => createRuleEngineSchema(db))
       .hold(() => createSchedulerEngineSchema(db))
       .hold(() => createHistorySchema(db))
+      .hold(() => createEnvSchema(db))
       .run()
       .then(resolve)
       .catch(reject);
