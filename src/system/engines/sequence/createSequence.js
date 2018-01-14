@@ -54,21 +54,3 @@ module.exports = {
   create: createRunFromSequenceParts,
   isValidParts,
 };
-
-/*const r = {
- rr : [
- {
-    type: 'broadcast_mqtt',
-    options: {
-      topic: '/actions/door',
-      value: 'open',
-
-    }
- },
- {
- type: 'wait',
- options: : 2000
- },
-
- ]
- };*/
