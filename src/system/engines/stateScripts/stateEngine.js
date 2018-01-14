@@ -5,7 +5,12 @@ let mqttClientGetter = () => {
   throw (new Error("getMqttClient never set: Was state engine loaded?"));
 };
 
+let apiGetter = () => {
+  throw (new Error("api never set: was state engine loaded?"));
+};
+
 let getMqttClient = () => mqttClientGetter();
+let getApi = () => apiGetter();
 
 const getStateScriptsFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
@@ -33,15 +38,15 @@ const saveStateScriptToDb = (db, stateScriptName, topic, eval) => new Promise((r
 });
 
 
-const transformStateScriptToString = (conditionString) => {
-  const evalString = `({ getStates }) => {
+const transformStateScriptToString = (conditionString, api) => {
+  const evalString = `({ ${Object.keys(api).join(', ')} }) => {
     ${conditionString}
   }`;
   return eval(evalString);
 };
 
 
-const addStateScript = (db,  stateScriptName, topic, eval ) => {
+const addStateScript = (db,  stateScriptName, topic, eval) => {
   if (typeof(stateScriptName) !== typeof('')){
     throw (new Error('engines:stateScript:addStateScript stateScriptName must be a string'));
   }
@@ -51,14 +56,15 @@ const addStateScript = (db,  stateScriptName, topic, eval ) => {
   if (typeof(eval) !== typeof('')){
     throw (new Error('engines:stateScript:addStateScript eval must be a string'));
   }
-
   if (stateScripts[stateScriptName] !== undefined){
     throw (new Error(`engines:stateEngine:addStateScript stateScript ${stateScriptName} already exists`));
   }
 
   let handle = undefined;
 
-  const evalFunction = () => transformStateScriptToString(eval)({  });
+  const api = getApi();
+  const evalFunc =  transformStateScriptToString(eval, api);
+  const evalFunction = () => evalFunc(api);
   stateScripts[stateScriptName] = {
     name: stateScriptName,
     topic,
@@ -103,8 +109,9 @@ const deleteStateScript = (db, stateScriptName) => new Promise((resolve, reject)
   }).catch(reject);
 });
 
-const loadStateScripts = (db, getMqttClient) => new Promise((resolve, reject) => {
+const loadStateScripts = (db, getMqttClient, api) => new Promise((resolve, reject) => {
   mqttClientGetter = getMqttClient;
+  apiGetter = () => api;
   getStateScriptsFromDb(db).then(loadedStateScripts => {
     loadedStateScripts.forEach(stateScriptData => {
       addStateScript(db, stateScriptData.name, stateScriptData.topic, stateScriptData.eval);

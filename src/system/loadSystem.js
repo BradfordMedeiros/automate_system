@@ -27,9 +27,9 @@ const loadSystem = (db, getMqttClient, api) => {
         system.baseSystem = baseSystem;
         loadEngines(
           db,
-          system.baseSystem.actions.getActions,
           system.baseSystem.conditions.getConditions,
-          getMqttClient
+          getMqttClient,
+          api,
         ).then(engines => {
           system.engines = engines;
           resolve(system);

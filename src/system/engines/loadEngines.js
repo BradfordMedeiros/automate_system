@@ -4,8 +4,8 @@ const sequenceEngine = require('./sequence/sequenceEngine');
 const ruleEngine = require('./rules/ruleEngine');
 const schedulerEngine = require('./scheduler/schedulerEngine');
 
-const loadEngines = (db, getActions, getConditions, getMqttClient) => {
-  const loadStateScriptEngine = stateScriptEngine.loadStateScripts(db, getMqttClient);
+const loadEngines = (db, getConditions, getMqttClient, api) => {
+  const loadStateScriptEngine = stateScriptEngine.loadStateScripts(db, getMqttClient,  api);
   const loadActionEngine = actionScriptEngine.loadActionScripts(db);
   const loadSequenceEngine = sequenceEngine.loadSequences(db, getMqttClient);
   const loadRuleEngine = ruleEngine.loadRules(db, getConditions, getMqttClient);
