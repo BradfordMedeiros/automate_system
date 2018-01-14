@@ -3,7 +3,7 @@ const states = require('./states/states');
 const conditions = require('./conditions/conditions');
 //const events = require('./events/events');
 
-const loadSystem = db => {
+const loadSystem = (db, api) => {
   const loadActions = actions.loadActions(db);
   const loadStates = states.loadStates(db);
 
@@ -34,7 +34,7 @@ const loadSystem = db => {
 
   return new Promise((resolve, reject) => {
     systemWithoutConditionsLoaded.then(system => {
-      conditions.loadConditions(db, system.states.getStates).then(() => { resolve(system) }).catch(reject);
+      conditions.loadConditions(db, api).then(() => { resolve(system) }).catch(reject);
     });
   });
 };

@@ -1,11 +1,8 @@
 
 let conditions = { };
 
-let stateGetter = () => {
-  throw (new Error("Get states never set: Were conditions loaded?"));
-};
-
-let getStates = () => stateGetter();
+let api = { };
+let getApi = () => api;
 
 const getConditionsFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
@@ -32,8 +29,8 @@ const saveConditionToDb = (db, conditionName, eval) => new Promise((resolve, rej
   }).catch(reject);
 });
 
-const transformConditionString = (conditionString) => {
-  const evalString = `({ getStates }) => {
+const transformConditionString = (conditionString, api) => {
+  const evalString = `({ ${Object.keys(api).join(', ')} }) => {
     ${conditionString}
   }`;
   return eval(evalString);
@@ -47,11 +44,14 @@ const addCondition = (db,  conditionName, eval) => {
     throw (new Error('baseSystem:conditions:addCondition eval must be a string'));
   }
 
+  const api = getApi();
+
   return new Promise((resolve, reject) => {
+    const conditionPayloadFunction = transformConditionString(eval, api);
     conditions[conditionName] = {
       name: conditionName,
       evalString: eval,
-      eval: () => transformConditionString(eval)({ getStates }),
+      eval: () => conditionPayloadFunction(api),
     };
     saveConditionToDb(db, conditionName, eval).then(resolve).catch(reject);
   });
@@ -74,8 +74,8 @@ const deleteCondition = (db, conditionName) => new Promise((resolve, reject) => 
   }).catch(reject);
 });
 
-const loadConditions = (db, getSystemStates) => new Promise((resolve, reject) => {
-  stateGetter =  getSystemStates;
+const loadConditions = (db, getApi) => new Promise((resolve, reject) => {
+  api =  getApi;
   getConditionsFromDb(db).then(conditions => {
     conditions.forEach(condition => {
       addCondition(db, condition.name, condition.eval);

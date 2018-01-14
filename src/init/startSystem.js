@@ -8,7 +8,6 @@ const startHttpBridge = require('./steps/startHttpBridge');
 const createSystemHooks = require('./hooks/createSystemHooks');
 const handleMqttMessage =  require('./hooks/handleMqttMessage');
 
-
 const injectStop = (system, setup) => {
   system.stop = () => {
     setup.httpServer.close();
@@ -26,7 +25,7 @@ const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent, onTopic) => 
     mqttSystem({ mqttPort: mqtt.mqttPort }).then(mqttClient => {
       setup.mqttClient = mqttClient;
       const databasePromise = getDatabase(resourceFile);
-      loadSystem(databasePromise, () => mqttClient).then(theSystem => {
+      loadSystem(databasePromise, () => mqttClient, { getStates: () => 'start system hook' }).then(theSystem => {
         setup.databasePromise = databasePromise;
         mqttClient.on('message', handleMqttMessage(mqttClient, createSystemHooks(theSystem, onEvent, onTopic)));
         if (httpBridge.enabled === true) {
