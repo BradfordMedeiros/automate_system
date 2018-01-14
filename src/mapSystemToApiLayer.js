@@ -43,6 +43,8 @@ const mapSystemToApiLayer = (system, raw) => {
       env: system.env,
     };
 
+    // this might be kind of buggy needs additional testing
+    // scared it leaks
     systemApi.stop = () => {
       system.stop();
       delete systemApi.stop;
