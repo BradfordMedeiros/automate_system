@@ -9,6 +9,7 @@ const init = ({
   httpBridge = { enabled: false },
   onEvent,
   onTopic,
+  api = { },
   verbose,
 } = {}) => {
   console.log('mqtt ', mqtt.mqttPort);
@@ -48,6 +49,10 @@ const init = ({
     throw (new Error("onTopic must be defined as a function if defined"))
   }
 
+  if ((api !== undefined) && (typeof(api) !== typeof({}))){
+    throw (new Error("api must be defined as a object if defined"))
+  }
+
   return new Promise((resolve, reject) => {
     start({
       resourceFile,
@@ -55,6 +60,7 @@ const init = ({
       httpBridge,
       onEvent,
       onTopic,
+      api,
       verbose,
     }).then(system => {
       resolve(mapSystemToApiLayer(system, false));

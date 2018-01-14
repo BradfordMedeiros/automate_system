@@ -26,9 +26,12 @@ automate_sys.init({
    console.log('message: ', message);
   },
   onTopic: ({ topic, message}) => {
-    console.log('topic: ', topic);
-    console.log('message: ', message);
+    //console.log('topic: ', topic);
+    //console.log('message: ', message);
   },
+  api: {
+    test : () => console.log('wow'),
+  }
 }).then(system => sys = system);
 
 
