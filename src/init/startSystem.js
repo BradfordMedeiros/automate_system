@@ -1,5 +1,3 @@
-const process = require('process');
-const path = require('path');
 const printStartMessage = require('./steps/printStartMessage');
 const migrateSystem = require('./steps/migrateSystem');
 const loadSystem = require('../system/loadSystem');
