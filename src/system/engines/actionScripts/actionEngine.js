@@ -1,6 +1,10 @@
 const path = require('path');
 
 let actionScripts = { };
+let apiGetter = () => {
+  throw (new Error("api never set: was state engine loaded?"));
+};
+let getApi = () => apiGetter();
 
 const getActionScriptsFromDb = db => new Promise((resolve, reject) => {
   db.open().then(database => {
@@ -35,8 +39,8 @@ const saveActionScriptToDb = (db, actionScriptName, topic, script, toTopic) => n
 });
 
 
-const transformActionScriptToString = (conditionString) => {
-  const evalString = `({ getStates }) => {
+const transformActionScriptToString = (conditionString, api) => {
+  const evalString = `({ ${Object.keys(api).join(', ')} }) => {
     ${conditionString}
   }`;
   return eval(evalString);
@@ -61,13 +65,14 @@ const addActionScript = (db,  actionScriptName, topic, script, toTopic ) => {
     throw (new Error(`engines:actionScript:addActionScript actionScript ${actionScriptName} already exists`));
   }
 
-  const evalFunction = () => transformActionScriptToString(script)({  });
+  const api = getApi();
+  const evalFunction = transformActionScriptToString(script, api);
   actionScripts[actionScriptName] = {
     name: actionScriptName,
     topic,
     toTopic,
     script,
-    getValue: evalFunction
+    getValue: () => evalFunction(api),
   };
   return saveActionScriptToDb(db, actionScriptName, topic, script, toTopic);
 };
@@ -89,7 +94,8 @@ const deleteActionScript = (db, actionScriptName) => new Promise((resolve, rejec
   }).catch(reject);
 });
 
-const loadActionScripts = (db) => new Promise((resolve, reject) => {
+const loadActionScripts = (db, api) => new Promise((resolve, reject) => {
+  getApi = () => api;
   getActionScriptsFromDb(db).then(loadedActionScripts => {
     loadedActionScripts.forEach(actionScriptData => {
       addActionScript(db, actionScriptData.name, actionScriptData.topic, actionScriptData.script, actionScriptData.toTopic);
