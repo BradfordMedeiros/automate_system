@@ -19,7 +19,7 @@ const injectStop = (system, setup) => {
 };
 
 const setup = { };
-const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent, onTopic, api = {}) => new Promise((resolve, reject) => {
+const initializeSystem = (resourceFile, mqtt,  httpBridge, onEvent, onTopic, api) => new Promise((resolve, reject) => {
   startMqttBroker({mqttPort: mqtt.mqttPort, httpPort: mqtt.httpPort, useInternalBroker: mqtt.useInternalBroker }).then(server => {
     setup.server = server;
     mqttSystem({ mqttPort: mqtt.mqttPort }).then(mqttClient => {
