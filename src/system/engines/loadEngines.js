@@ -17,7 +17,7 @@ const loadEngines = (db, getConditions, getMqttClient, api) => {
     enginesLoaded.then(() => {
       const engines = {
         stateScriptEngine: {
-          addStateScript: (name, topic, eval) => stateScriptEngine.addStateScript(db, name, topic, eval),
+          addStateScript: (name, topic, eval, rate) => stateScriptEngine.addStateScript(db, name, topic, eval, rate),
           deleteStateScript: (name) => stateScriptEngine.deleteStateScript(db, name),
           getStateScripts: stateScriptEngine.getStateScripts,
         },

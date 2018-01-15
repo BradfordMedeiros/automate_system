@@ -6,6 +6,7 @@ const createSchema = db => new Promise((resolve, reject) => {
         name TEXT UNIQUE NOT NULL,
         topic	TEXT NOT NULL,
         eval	TEXT NOT NULL,
+        rate NUMBER NOT NULL,
         PRIMARY KEY(name)
       );`, (err) => {
         if (err){

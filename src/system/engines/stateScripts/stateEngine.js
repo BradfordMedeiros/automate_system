@@ -24,9 +24,9 @@ const getStateScriptsFromDb = db => new Promise((resolve, reject) => {
   }).catch(reject);
 });
 
-const saveStateScriptToDb = (db, stateScriptName, topic, eval) => new Promise((resolve, reject) => {
+const saveStateScriptToDb = (db, stateScriptName, topic, eval, rate) => new Promise((resolve, reject) => {
   db.open().then(database => {
-    const query = `INSERT OR REPLACE INTO state_engine (name, topic, eval) values ('${stateScriptName}', '${topic}','${eval}')`;
+    const query = `INSERT OR REPLACE INTO state_engine (name, topic, eval, rate) values ('${stateScriptName}', '${topic}','${eval}', ${rate})`;
     database.all(query, (err) => {
       if (err){
         reject(err);
@@ -46,7 +46,7 @@ const transformStateScriptToString = (conditionString, api) => {
 };
 
 
-const addStateScript = (db,  stateScriptName, topic, eval) => {
+const addStateScript = (db,  stateScriptName, topic, eval, rate) => {
   if (typeof(stateScriptName) !== typeof('')){
     throw (new Error('engines:stateScript:addStateScript stateScriptName must be a string'));
   }
@@ -55,6 +55,9 @@ const addStateScript = (db,  stateScriptName, topic, eval) => {
   }
   if (typeof(eval) !== typeof('')){
     throw (new Error('engines:stateScript:addStateScript eval must be a string'));
+  }
+  if (typeof(rate) !== typeof(1)){
+    throw (new Error('engines:stateScript:addStateScript rate must be a number'));
   }
   if (stateScripts[stateScriptName] !== undefined){
     throw (new Error(`engines:stateEngine:addStateScript stateScript ${stateScriptName} already exists`));
@@ -70,6 +73,7 @@ const addStateScript = (db,  stateScriptName, topic, eval) => {
     topic,
     evalString: eval,
     eval: evalFunction,
+    rate,
     run: () => {
       if (handle){
         return;
@@ -77,7 +81,7 @@ const addStateScript = (db,  stateScriptName, topic, eval) => {
       handle = setInterval(() => {
         const value = evalFunction();
         mqttClientGetter().publish(topic, value === undefined ? '' : value.toString());
-      }, 1000);
+      }, rate);
     },
     stop: () => {
       clearInterval(handle);
@@ -87,7 +91,7 @@ const addStateScript = (db,  stateScriptName, topic, eval) => {
 
   return new Promise((resolve, reject) => {
     stateScripts[stateScriptName].run();
-    saveStateScriptToDb(db, stateScriptName, topic, eval).then(resolve).catch(reject);
+    saveStateScriptToDb(db, stateScriptName, topic, eval, rate).then(resolve).catch(reject);
   });
 
 };
@@ -114,7 +118,7 @@ const loadStateScripts = (db, getMqttClient, api) => new Promise((resolve, rejec
   apiGetter = () => api;
   getStateScriptsFromDb(db).then(loadedStateScripts => {
     loadedStateScripts.forEach(stateScriptData => {
-      addStateScript(db, stateScriptData.name, stateScriptData.topic, stateScriptData.eval);
+      addStateScript(db, stateScriptData.name, stateScriptData.topic, stateScriptData.eval, stateScriptData.rate);
     });
     resolve();
   }).catch(reject);
